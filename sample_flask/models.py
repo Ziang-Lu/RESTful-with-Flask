@@ -9,24 +9,6 @@ from datetime import datetime
 from sample_flask import db, ma
 
 
-# class ProductSchema(ma.Schema):
-#     """
-#     Product schema.
-#     """
-#
-#     # class Meta:
-#     #     fields = ('id', 'name', 'description', 'price', 'qty', 'date_created')
-#
-#     id = fields.Integer(dump_only=True)  # Mark this field to be "read-only"
-#     name = fields.Str(required=True, validate=validate.Length(min=1))  # When doing deserialization, this field is required to exist in the JSON dictionary.
-#     description = fields.Str(required=True)
-#     price = fields.Float(
-#         required=True, validate=validate.Range(min=0.0, min_inclusive=False)
-#     )
-#     qty = fields.Integer(required=True, validate=validate.Range(min=1))
-#     date_created = fields.DateTime()
-
-
 class Author(db.Model):
     """
     Author table.
@@ -63,6 +45,24 @@ class Book(db.Model):
 
     def __repr__(self):
         return f"Book('{self.title}' by '{self.author.name}')"
+
+
+# Note:
+# Schemas are only used with naive RESTful API implementation.
+
+# class ProductSchema(ma.Schema):
+#
+#     # class Meta:
+#     #     fields = ('id', 'name', 'description', 'price', 'qty', 'date_created')
+#
+#     id = fields.Integer(dump_only=True)  # Mark this field to be "read-only", so it won't be serialized.
+#     name = fields.Str(required=True, validate=validate.Length(min=1))  # When doing deserialization, this field is required to exist in the JSON dictionary.
+#     description = fields.Str(required=True)
+#     price = fields.Float(
+#         required=True, validate=validate.Range(min=0.0, min_inclusive=False)
+#     )
+#     qty = fields.Integer(required=True, validate=validate.Range(min=1))
+#     date_created = fields.DateTime()
 
 
 class AuthorSchema(ma.ModelSchema):
