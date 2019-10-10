@@ -112,6 +112,18 @@ There are two resources on this Flask application:
 
   Similar to `Author`
 
+***
+
+**Implementation Detail**
+
+Basically, there are two ways to implement this RESTful API:
+
+1. Naive implementation + `marshmallow`/`flask_marshmallow` for schema definition & serialization/deserialization
+2. Extensions
+   * `flask_restful` + `flask_restful.reqparse`/`flask_restful.marshal()` for request parsing (deserialization) and serialization
+
+***
+
 <br>
 
 **Note on web service security**

@@ -38,15 +38,13 @@ def add_book():
     :return:
     """
     try:
-        new_book = book_schema.load(request.get_json(), unknown=EXCLUDE)  # When encountering a unknown fields, simply exclude it
+        new_book = book_schema.load(request.get_json(), unknown=EXCLUDE)
     except ValidationError as e:
         return {
             'message': e.messages
         }, 400
-
     db.session.add(new_book)
     db.session.commit()
-
     return {
         'status': 'success',
         'data': book_schema.dump(new_book)
@@ -60,13 +58,7 @@ def get_book_by_id(id: int):
     :param id: int
     :return:
     """
-    book = Book.query.get(id)
-    if not book:
-        return {
-            'status': 'error',
-            'message': 'Book not found'
-        }, 404
-
+    book = Book.query.get_or_404(id, description='Book not found')
     return {
         'status': 'success',
         'data': book_schema.dump(book)
@@ -80,12 +72,7 @@ def update_book(id: int):
     :param id: int
     :return:
     """
-    book = Book.query.get(id)
-    if not book:
-        return {
-            'status': 'error',
-            'message': 'Book not found'
-        }, 404
+    book = Book.query.get_or_404(id, description='Book not found')
 
     json_data = request.get_json()
     title = json_data.get('title')
@@ -129,12 +116,7 @@ def delete_book(id: int):
     :param id: int
     :return:
     """
-    book = Book.query.get(id)
-    if not book:
-        return {
-            'status': 'error',
-            'message': 'Book not found'
-        }, 404
+    book = Book.query.get_or_404(id, description='Book not found')
 
     db.session.delete(book)
     db.session.commit()

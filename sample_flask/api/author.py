@@ -43,13 +43,8 @@ def add_author():
         return {
             'message': e.messages
         }, 400
-
-    print('---------------------')
-    print(new_author)
-
     db.session.add(new_author)
     db.session.commit()
-
     return {
         'status': 'success',
         'data': author_schema.dump(new_author)
@@ -63,13 +58,7 @@ def get_author_by_id(id: int):
     :param id: int
     :return:
     """
-    author = Author.query.get(id)
-    if not author:
-        return {
-            'status': 'error',
-            'message': 'Author not found'
-        }, 404
-
+    author = Author.query.get_or_404(id, description='Author not found')
     return {
         'status': 'success',
         'data': author_schema.dump(author)
@@ -83,12 +72,7 @@ def update_author(id: int):
     :param id: int
     :return:
     """
-    author = Author.query.get(id)
-    if not author:
-        return {
-            'status': 'error',
-            'message': 'Author not found'
-        }, 404
+    author = Author.query.get_or_404(id, description='Author not found')
 
     json_data = request.get_json()
 
@@ -162,13 +146,7 @@ def delete_author(id: int):
     :param id: int
     :return:
     """
-    author = Author.query.get(id)
-    if not author:
-        return {
-            'status': 'error',
-            'message': 'Author not found'
-        }, 404
-
+    author = Author.query.get_or_404(id, description='Author not found')
     db.session.delete(author)
     db.session.commit()
     return '', 204

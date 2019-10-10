@@ -6,8 +6,6 @@ Flask models module.
 
 from datetime import datetime
 
-from marshmallow import post_load, pre_load
-
 from sample_flask import db, ma
 
 
@@ -75,32 +73,21 @@ class AuthorSchema(ma.ModelSchema):
     For deserialization, a JSON dictionary is validated, and then will be
     deserialized to:
     -> (by default) a dictionary defined by this AuthorSchema.
+    -> (since we defined "model = Author") an Author object
     """
 
     class Meta:
-        """
-        Automatically create this schema according to model "Author".
-        """
+        # Automatically create this schema according to model "Author", and for
+        # deserialization, a JSON dictionary will be deserialized to an Author
+        # object.
         model = Author
+        # This field is loaded only, so it won't be serialized.
         load_only = ('email',)
 
     _links = ma.Hyperlinks({
         'self': ma.URLFor('author_bp.get_author_by_id', id='<id>'),
         'collection': ma.URLFor('author_bp.get_authors')
     })
-
-    @post_load
-    def make_author(self, data: dict, **kwargs) -> Author:
-        """
-        After deserialization, the original JSON dictionary will be deserialized
-        to an Author object.
-        :param data: dict
-        :return: Author
-        """
-        print('-------------------------')
-        print(data)
-
-        return Author(**data)
 
 
 class BookSchema(ma.ModelSchema):
@@ -109,22 +96,9 @@ class BookSchema(ma.ModelSchema):
     """
 
     class Meta:
-        """
-        Automatically create this schema according to model "Book".
-        """
         model = Book
 
     _links = ma.Hyperlinks({
         'self': ma.URLFor('book_bp.get_book_by_id', id='<id>'),
         'collection': ma.URLFor('book_bp.get_books')
     })
-
-    @post_load
-    def make_book(self, data: dict) -> Book:
-        """
-        After deserialization, the original JSON dictionary will be deserialized
-        to a Book object.
-        :param data: dict
-        :return: Book
-        """
-        return Book(**data)

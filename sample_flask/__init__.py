@@ -25,13 +25,13 @@ def create_app(config_class=Config) -> Flask:
     # Order matters: Initialize SQLAlchemy before Marshmallow
 
     # Import the blueprint, which have routes registered on them
-    # from sample_flask.api import api_bp
-    # Register the blueprint on the app
-    # app.register_blueprint(api_bp)
     from sample_flask.api.author import author_bp
+    # Register the blueprint on the app
     app.register_blueprint(author_bp)
     from sample_flask.api.book import book_bp
     app.register_blueprint(book_bp)
+    # from sample_flask.api import api_bp
+    # app.register_blueprint(api_bp)
 
     # Initialize the database
     with app.app_context():
