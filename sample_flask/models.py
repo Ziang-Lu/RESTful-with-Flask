@@ -6,6 +6,8 @@ Flask models module.
 
 from datetime import datetime
 
+from marshmallow import post_dump
+
 from sample_flask import db, ma
 
 
@@ -85,9 +87,26 @@ class AuthorSchema(ma.ModelSchema):
         load_only = ('email',)
 
     _links = ma.Hyperlinks({
-        'self': ma.URLFor('author_bp.get_author_by_id', id='<id>'),
-        'collection': ma.URLFor('author_bp.get_authors')
+        'self': ma.URLFor(
+            'author_bp.get_author_by_id', id='<id>', _external=True
+        ),
+        'collection': ma.URLFor('author_bp.get_authors', _external=True)
     })
+
+    @post_dump
+    def marshal_collection_response(self, data: dict, **kwargs) -> dict:
+        """
+        After serialization, if returning a collection of authors, marshal the
+        data for each author.
+        :param data: dict
+        :param kwargs:
+        :return: dict
+        """
+        if self.many:
+            data.pop('books')
+            data['url'] = data['_links']['self']
+            data.pop('_links')
+        return data
 
 
 class BookSchema(ma.ModelSchema):
@@ -99,6 +118,19 @@ class BookSchema(ma.ModelSchema):
         model = Book
 
     _links = ma.Hyperlinks({
-        'self': ma.URLFor('book_bp.get_book_by_id', id='<id>'),
-        'collection': ma.URLFor('book_bp.get_books')
+        'self': ma.URLFor('book_bp.get_book_by_id', id='<id>', _external=True),
+        'collection': ma.URLFor('book_bp.get_books', _external=True)
     })
+
+    def marshal_collection_response(self, data: dict, **kwargs) -> dict:
+        """
+        After serialization, if returning a collection of books, marshal the
+        data for each book.
+        :param data: dict
+        :param kwargs:
+        :return: dict
+        """
+        if self.many:
+            data['url'] = data['_links']['self']
+            data.pop('_links')
+        return data
