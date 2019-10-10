@@ -7,6 +7,11 @@ verify_ssl = true
 
 [packages]
 flask-restful = "*"
+flask-sqlalchemy = "*"
+sqlalchemy = "*"
+marshmallow = "*"
+marshmallow-sqlalchemy = "*"
+flask-marshmallow = "*"
 
 [requires]
 python_version = "3.7"
