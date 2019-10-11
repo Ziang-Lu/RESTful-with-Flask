@@ -25,14 +25,14 @@ def create_app(config_class=Config) -> Flask:
     # Order matters: Initialize SQLAlchemy before Marshmallow
 
     # Naive implementation:
-    from sample_flask.naive_api.author import author_bp
-    app.register_blueprint(author_bp)
-    from sample_flask.naive_api.book import book_bp
-    app.register_blueprint(book_bp)
+    # from sample_flask.naive_api.author import author_bp
+    # app.register_blueprint(author_bp)
+    # from sample_flask.naive_api.book import book_bp
+    # app.register_blueprint(book_bp)
 
     # Implementation with extension:
-    # from sample_flask.api import api_bp
-    # app.register_blueprint(api_bp)
+    from sample_flask.api import api_bp
+    app.register_blueprint(api_bp)
 
     # Initialize the database
     with app.app_context():

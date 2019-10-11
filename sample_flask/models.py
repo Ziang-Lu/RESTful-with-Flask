@@ -6,9 +6,11 @@ Flask models module.
 
 from datetime import datetime
 
-from marshmallow import post_dump
+from marshmallow import EXCLUDE, fields, post_load, pre_load, validate
 
 from sample_flask import db, ma
+
+##### MODELS #####
 
 
 class Author(db.Model):
@@ -21,9 +23,8 @@ class Author(db.Model):
     EMAIL_MAX_LEN = 120
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(NAME_MAX_LEN), nullable=False)
+    name = db.Column(db.String(NAME_MAX_LEN), nullable=False, unique=True)
     email = db.Column(db.String(EMAIL_MAX_LEN))
-    books = db.relationship('Book', backref='author', lazy=True)
 
     def __repr__(self):
         return f"Author('{self.name}')"
@@ -43,94 +44,99 @@ class Book(db.Model):
         db.Integer, db.ForeignKey('authors.id', ondelete='CASCADE'),
         nullable=False
     )
+    author = db.relationship(Author, backref='books', lazy=True)
     date_published = db.Column(db.Date, nullable=False, default=datetime.today)
 
     def __repr__(self):
         return f"Book('{self.title}' by '{self.author.name}')"
 
 
-# Note:
-# Schemas are only used with naive RESTful API implementation.
-
-# class ProductSchema(ma.Schema):
-#
-#     # class Meta:
-#     #     fields = ('id', 'name', 'description', 'price', 'qty', 'date_created')
-#
-#     id = fields.Integer(dump_only=True)  # Mark this field to be "read-only", so it won't be serialized.
-#     name = fields.Str(required=True, validate=validate.Length(min=1))  # When doing deserialization, this field is required to exist in the JSON dictionary.
-#     description = fields.Str(required=True)
-#     price = fields.Float(
-#         required=True, validate=validate.Range(min=0.0, min_inclusive=False)
-#     )
-#     qty = fields.Integer(required=True, validate=validate.Range(min=1))
-#     date_created = fields.DateTime()
+##### SCHEMAS #####
+# Note: Schemas are only used with naive RESTful API implementation.
 
 
-class AuthorSchema(ma.ModelSchema):
+class AuthorSchema(ma.Schema):
     """
-    Author schema.
+    Author schema full complete definition.
     For serialization, a Author object will be serialized to a JSON dictionary
     defined by this AuthorSchema.
     For deserialization, a JSON dictionary is validated, and then will be
     deserialized to:
     -> (by default) a dictionary defined by this AuthorSchema.
-    -> (since we defined "model = Author") an Author object
     """
+
+    id = fields.Integer(dump_only=True)  # Mark this field to be "dump-only", so it can't be deserialized from a request
+    name = fields.Str(
+        required=True, validate=validate.Length(min=1, max=Author.NAME_MAX_LEN)
+    )  # When doing deserialization, this field is required to exist in the JSON dictionary.
+    email = fields.Email(
+        validate=validate.Length(max=Author.EMAIL_MAX_LEN), load_only=True
+    )  # Mark this field to be "load-only", so it can't be serialized
+
+    books = fields.Nested(
+        'BookSchema', many=True, only=('title', 'url_self'), dump_only=True
+    )
+
+    url_self = ma.URLFor('author.get_author_by_id', id='<id>', _external=True)
+    url_collection = ma.URLFor('author.get_authors', _external=True)
 
     class Meta:
-        # Automatically create this schema according to model "Author", and for
-        # deserialization, a JSON dictionary will be deserialized to an Author
-        # object.
-        model = Author
-        # This field is loaded only, so it won't be serialized.
-        load_only = ('email',)
+        unknown = EXCLUDE  # When encountering a unknown fields, simply exclude it
 
-    _links = ma.Hyperlinks({
-        'self': ma.URLFor(
-            'author_bp.get_author_by_id', id='<id>', _external=True
-        ),
-        'collection': ma.URLFor('author_bp.get_authors', _external=True)
-    })
-
-    @post_dump
-    def marshal_collection_response(self, data: dict, **kwargs) -> dict:
+    @post_load
+    def find_author(self, data: dict, **kwargs) -> Author:
         """
-        After serialization, if returning a collection of authors, marshal the
-        data for each author.
+        After deserialization, find the corresponding author, and if necessary,
+        construct the JSON data into an Author object.
         :param data: dict
         :param kwargs:
-        :return: dict
+        :return: Author
         """
-        if self.many:
-            data.pop('books')
-            data['url'] = data['_links']['self']
-            data.pop('_links')
-        return data
+        # Process "name" field to be in title case
+        data['name'] = data['name'].strip().title()
+        author = Author.query.filter_by(name=data['name']).first()
+        if author:
+            return author
+        return Author(**data)
 
 
-class BookSchema(ma.ModelSchema):
+author_schema = AuthorSchema()
+authors_schema = AuthorSchema(many=True, only=('name', 'url_self'))
+
+
+class BookSchema(ma.Schema):
     """
-    Book schema.
+    Book schema complete definition.
     """
+
+    id = fields.Integer(dump_only=True)
+    title = fields.Str(
+        required=True, validate=validate.Length(min=1, max=Book.TITLE_MAX_LEN)
+    )
+    author = fields.Nested(
+        AuthorSchema, required=True, only=('name', 'url_self')
+    )
+    date_published = fields.Date()
+
+    url_self = ma.URLFor('book.get_book_by_id', id='<id>', _external=True)
+    url_collection = ma.URLFor('book.get_books', _external=True)
 
     class Meta:
-        model = Book
+        unknown = EXCLUDE
 
-    _links = ma.Hyperlinks({
-        'self': ma.URLFor('book_bp.get_book_by_id', id='<id>', _external=True),
-        'collection': ma.URLFor('book_bp.get_books', _external=True)
-    })
-
-    def marshal_collection_response(self, data: dict, **kwargs) -> dict:
+    @post_load
+    def make_book(self, data: dict, **kwargs) -> Book:
         """
-        After serialization, if returning a collection of books, marshal the
-        data for each book.
+        After deserialization, do some post-processing and construct the JSON
+        data into a Book object.
         :param data: dict
         :param kwargs:
-        :return: dict
+        :return: Book
         """
-        if self.many:
-            data['url'] = data['_links']['self']
-            data.pop('_links')
-        return data
+        # Process "title" field to be in title case
+        data['title'] = data['title'].strip().title()
+        return Book(**data)
+
+
+book_schema = BookSchema()
+books_schema = BookSchema(many=True, only=('title', 'author', 'url_self'))

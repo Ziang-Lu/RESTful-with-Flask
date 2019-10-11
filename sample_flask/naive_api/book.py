@@ -7,15 +7,12 @@ Book-related RESTful API module.
 from typing import Any
 
 from flask import Blueprint, request
-from marshmallow import EXCLUDE, ValidationError, validate
+from marshmallow import ValidationError
 
 from .. import db
-from ..models import Book, BookSchema
+from ..models import Book, book_schema, books_schema
 
-book_bp = Blueprint(name='book_bp', import_name=__name__)
-
-book_schema = BookSchema()
-books_schema = BookSchema(many=True)
+book_bp = Blueprint(name='book', import_name=__name__)
 
 
 @book_bp.route('/books')
@@ -38,7 +35,7 @@ def add_book():
     :return:
     """
     try:
-        new_book = book_schema.load(request.get_json(), unknown=EXCLUDE)
+        new_book = book_schema.load(request.get_json())
     except ValidationError as e:
         return {
             'message': e.messages
@@ -74,39 +71,22 @@ def update_book(id: int):
     """
     book = Book.query.get_or_404(id, description='Book not found')
 
-    json_data = request.get_json()
-    title = json_data.get('title')
     try:
-        validate_title_field(title)
+        updated_book = book_schema.load(request.get_json())
     except ValidationError as e:
         return {
             'message': e.messages
-        }, 400
+        }
 
-    if title:
-        book.title = title
-
+    if updated_book.title:
+        book.title = updated_book.title
+    if updated_book.author:
+        book.author = updated_book.author
     db.session.commit()
-
     return {
         'status': 'success',
         'data': book_schema.dump(book)
     }, 201
-
-
-def validate_title_field(title: Any) -> None:
-    """
-    Helper function to validate the given title field.
-    :param title: Any
-    :return: None
-    """
-    try:
-        title = str(title)
-    except TypeError:
-        raise ValidationError('title must be string')
-
-    length_validator = validate.Length(max=Book.TITLE_MAX_LEN)
-    length_validator(title)
 
 
 @book_bp.route('/books/<int:id>', methods=['DELETE'])
@@ -117,8 +97,6 @@ def delete_book(id: int):
     :return:
     """
     book = Book.query.get_or_404(id, description='Book not found')
-
     db.session.delete(book)
     db.session.commit()
     return '', 204
-

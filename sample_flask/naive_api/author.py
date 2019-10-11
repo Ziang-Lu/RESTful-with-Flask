@@ -7,15 +7,12 @@ Author-related RESTful API module.
 from typing import Any
 
 from flask import Blueprint, request
-from marshmallow import EXCLUDE, ValidationError, validate
+from marshmallow import ValidationError
 
 from .. import db
-from ..models import Author, AuthorSchema
+from ..models import Author, author_schema, authors_schema
 
-author_bp = Blueprint(name='author_bp', import_name=__name__)
-
-author_schema = AuthorSchema()
-authors_schema = AuthorSchema(many=True)
+author_bp = Blueprint(name='author', import_name=__name__)
 
 
 @author_bp.route('/authors')
@@ -38,11 +35,12 @@ def add_author():
     :return:
     """
     try:
-        new_author = author_schema.load(request.get_json(), unknown=EXCLUDE)  # When encountering a unknown fields, simply exclude it
+        new_author = author_schema.load(request.get_json())
     except ValidationError as e:
         return {
             'message': e.messages
         }, 400
+
     db.session.add(new_author)
     db.session.commit()
     return {
@@ -74,69 +72,22 @@ def update_author(id: int):
     """
     author = Author.query.get_or_404(id, description='Author not found')
 
-    json_data = request.get_json()
-
-    name = json_data.get('name')
     try:
-        validate_name_field(name)
+        updated_author = author_schema.load(request.get_json(), partial=True)
     except ValidationError as e:
         return {
             'message': e.messages
         }, 400
 
-    email = json_data.get('email')
-    try:
-        validate_email_field(name)
-    except ValidationError as e:
-        return {
-            'message': e.messages
-        }
-
-    if name:
-        author.name = name
-    if email:
-        author.email = email
-
+    if updated_author.name:
+        author.name = updated_author.name
+    if updated_author.email:
+        author.email = updated_author.email
     db.session.commit()
-
     return {
         'status': 'success',
         'data': author_schema.dump(author)
     }, 201
-
-
-def validate_name_field(name: Any) -> None:
-    """
-    Helper function to validate the given name field.
-    :param name: Any
-    :return: None
-    """
-    try:
-        name = str(name)
-    except TypeError:
-        raise ValidationError('name must be string')
-
-    length_validator = validate.Length(max=Author.NAME_MAX_LEN)
-    length_validator(name)
-
-
-def validate_email_field(email: Any) -> None:
-    """
-    Helper function to validate the given email field.
-    :param email:
-    :return:
-    """
-    try:
-        email = str(email)
-    except TypeError:
-        raise ValidationError('email must be string')
-
-    validators = [
-        validate.Length(max=Author.EMAIL_MAX_LEN),
-        validate.Email()
-    ]
-    for validator in validators:
-        validator(email)
 
 
 @author_bp.route('/authors/<int:id>', methods=['DELETE'])

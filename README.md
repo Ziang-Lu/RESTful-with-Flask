@@ -118,13 +118,11 @@ There are two resources on this Flask application:
 
 Basically, there are two ways to implement this RESTful API:
 
-1. Naive implementation + `marshmallow`/`flask_marshmallow` for schema definition & deserialization (including validation) / serialization
-
+1. Naive implementation with view functions
 2. Implementation with extension
+   * `flask_restful` for defining resources
 
-   * `flask_restful`
-
-     `flask_restful`  for defining resources + `flask_restful.reqparse`/`flask_restful.marshal()` for request parsing (validation & deserialization) and serialization
+But either way can use `marshmallow`/`flask_marshmallow` for schema definition & deserialization (including validation) / serialization.
 
 ***
 
@@ -139,6 +137,4 @@ For this web service that we wrote, it is <u>open to anyone</u>, which is <u>ver
 However, the <u>"stateless principle" of RESTful architecture requires that the clients needs to provide credentials in every request they send</u>.
 
 => Check out https://github.com/miguelgrinberg/flask-httpauth for a simple authentication system
-
-* Pagination
 
