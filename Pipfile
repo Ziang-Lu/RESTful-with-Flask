@@ -12,6 +12,8 @@ sqlalchemy = "*"
 marshmallow = "*"
 marshmallow-sqlalchemy = "*"
 flask-marshmallow = "*"
+flask-bcrypt = "*"
+flask-httpauth = "*"
 
 [requires]
 python_version = "3.7"

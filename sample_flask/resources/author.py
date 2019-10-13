@@ -2,13 +2,18 @@
 
 """
 Author-related RESTful API module.
+
+In the naive implementation, we used two "GET" methods to access "Author"
+resource, i.e., in a collection view and in a single view.
+But here, we need to split the same "Author" resource into two resources, i.e.,
+"AuthorList" for the collection view and "AuthorItem" for the single view.
 """
 
 from flask import request
 from flask_restful import Resource
 from marshmallow import ValidationError
 
-from .. import db
+from .. import auth, db
 from ..models import Author, author_schema, authors_schema
 
 
@@ -16,6 +21,7 @@ class AuthorList(Resource):
     """
     Resource for a collection of authors.
     """
+    decorators = [auth.login_required]
 
     def get(self):
         """
@@ -52,6 +58,7 @@ class AuthorItem(Resource):
     """
     Resource for a single author.
     """
+    decorators = [auth.login_required]
 
     def get(self, id: int):
         """
@@ -74,8 +81,9 @@ class AuthorItem(Resource):
         author = Author.query.get_or_404(id, description='Author not found')
 
         try:
-            updated_author = author_schema.load(request.get_json(),
-                                                partial=True)
+            updated_author = author_schema.load(
+                request.get_json(), partial=True
+            )
         except ValidationError as e:
             return {
                 'message': e.messages

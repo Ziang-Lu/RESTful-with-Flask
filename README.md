@@ -120,21 +120,40 @@ Basically, there are two ways to implement this RESTful API:
 
 1. Naive implementation with view functions
 2. Implementation with extension
+  
    * `flask_restful` for defining resources
+   
+   * `flask_restplus` for defining resources
+   
+     Basically, this is very similar to `flask_restful`, since originaly this project was forked from `flask_restful`. The biggest advantage over `flask_restful` is the auto-generated documentation using `Swagger` UI.
+   
+     *(In my implementation, I simply used `flask_restful`. For the usage of `flask_restplus` and `Swagger` UI, check out their documentation: https://flask-restplus.readthedocs.io/en/stable/)*
 
 But either way can use `marshmallow`/`flask_marshmallow` for schema definition & deserialization (including validation) / serialization.
 
 ***
 
-<br>
-
 **Note on web service security**
 
 For this web service that we wrote, it is <u>open to anyone</u>, which is <u>very unsafe</u>.
 
-=> Thus, we <u>need a authentication mechanism</u>.
+=> Thus, we <u>need a authentication mechanism</u>, so that the web service is only open to those registered users.
 
 However, the <u>"stateless principle" of RESTful architecture requires that the clients needs to provide credentials in every request they send</u>.
 
-=> Check out https://github.com/miguelgrinberg/flask-httpauth for a simple authentication system
+According to the author of `flask-httpauth` in his article https://blog.miguelgrinberg.com/post/restful-authentication-with-flask, there are two ways to do the authentication:
+
+* Maintain a `users` table of registered users
+
+* The client needs to provide credentials in every request they send.
+
+  1. Provide username-password combination in every request
+
+  2. Send username-password to the server, and get back a token.
+
+     This token is only valid for some time, i.e., has an expiration time. During this period of time, the user can simply provide this token as the credential.
+
+     In this way, the authentication mechanism becomes much simpler, and even safer since the token is only valid for some time.
+
+***
 

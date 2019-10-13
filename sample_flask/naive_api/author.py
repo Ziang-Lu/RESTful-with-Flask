@@ -9,13 +9,14 @@ from typing import Any
 from flask import Blueprint, request
 from marshmallow import ValidationError
 
-from .. import db
+from .. import auth, db
 from ..models import Author, author_schema, authors_schema
 
 author_bp = Blueprint(name='author', import_name=__name__)
 
 
 @author_bp.route('/authors')
+@auth.login_required
 def get_authors():
     """
     Returns all the authors.
@@ -29,6 +30,7 @@ def get_authors():
 
 
 @author_bp.route('/authors', methods=['POST'])
+@auth.login_required
 def add_author():
     """
     Adds a new author.
@@ -50,6 +52,7 @@ def add_author():
 
 
 @author_bp.route('/authors/<int:id>')
+@auth.login_required
 def get_author_by_id(id: int):
     """
     Returns the author with the given ID.
@@ -64,6 +67,7 @@ def get_author_by_id(id: int):
 
 
 @author_bp.route('/authors/<int:id>', methods=['PUT'])
+@auth.login_required
 def update_author(id: int):
     """
     Updates the author with the given ID.
@@ -91,6 +95,7 @@ def update_author(id: int):
 
 
 @author_bp.route('/authors/<int:id>', methods=['DELETE'])
+@auth.login_required
 def delete_author(id: int):
     """
     Deletes the author with the given ID.

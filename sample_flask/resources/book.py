@@ -8,7 +8,7 @@ from flask import request
 from flask_restful import Resource
 from marshmallow import ValidationError
 
-from .. import db
+from .. import auth, db
 from ..models import Book, book_schema, books_schema
 
 
@@ -16,6 +16,7 @@ class BookList(Resource):
     """
     Resource for a collection of books.
     """
+    decorators = [auth.login_required]
 
     def get(self):
         """
@@ -51,6 +52,7 @@ class BookItem(Resource):
     """
     Resource for a single book.
     """
+    decorators = [auth.login_required]
 
     def get(self, id: int):
         """

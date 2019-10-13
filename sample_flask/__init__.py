@@ -1,4 +1,6 @@
 from flask import Flask
+from flask_bcrypt import Bcrypt
+from flask_httpauth import HTTPBasicAuth
 from flask_marshmallow import Marshmallow
 from flask_sqlalchemy import SQLAlchemy
 
@@ -6,6 +8,8 @@ from .config import Config
 
 db = SQLAlchemy()
 ma = Marshmallow()
+bcrypt = Bcrypt()
+auth = HTTPBasicAuth()
 
 
 def create_app(config_class=Config) -> Flask:
@@ -21,8 +25,8 @@ def create_app(config_class=Config) -> Flask:
     # Initialize the SQLAlchemy object with the newly created application
     db.init_app(app)
     # Initialize the Marshmallow object with the newly created application
-    ma.init_app(app)
-    # Order matters: Initialize SQLAlchemy before Marshmallow
+    ma.init_app(app)  # Order matters: Initialize SQLAlchemy before Marshmallow
+    bcrypt.init_app(app)
 
     # Naive implementation:
     # from sample_flask.naive_api.author import author_bp
@@ -33,6 +37,10 @@ def create_app(config_class=Config) -> Flask:
     # Implementation with extension:
     from sample_flask.api import api_bp
     app.register_blueprint(api_bp)
+
+    # Authentication-related stuff
+    from sample_flask.naive_api.auth import auth_bp
+    app.register_blueprint(auth_bp)
 
     # Initialize the database
     with app.app_context():
