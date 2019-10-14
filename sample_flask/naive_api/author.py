@@ -14,9 +14,20 @@ from ..models import Author, author_schema, authors_schema
 
 author_bp = Blueprint(name='author', import_name=__name__)
 
+@author_bp.before_request
+@auth.login_required
+def before_request() -> None:
+    """
+    Before all the request to be handled by "author_bp" blueprint, do login
+    check.
+    This is done to avoid all the routes registered on this blueprint having to
+    be explicitly decorated with "auth.login_required".
+    :return: None
+    """
+    pass
+
 
 @author_bp.route('/authors')
-@auth.login_required
 def get_authors():
     """
     Returns all the authors.
@@ -30,7 +41,6 @@ def get_authors():
 
 
 @author_bp.route('/authors', methods=['POST'])
-@auth.login_required
 def add_author():
     """
     Adds a new author.
@@ -52,7 +62,6 @@ def add_author():
 
 
 @author_bp.route('/authors/<int:id>')
-@auth.login_required
 def get_author_by_id(id: int):
     """
     Returns the author with the given ID.
@@ -67,7 +76,6 @@ def get_author_by_id(id: int):
 
 
 @author_bp.route('/authors/<int:id>', methods=['PUT'])
-@auth.login_required
 def update_author(id: int):
     """
     Updates the author with the given ID.
@@ -91,11 +99,10 @@ def update_author(id: int):
     return {
         'status': 'success',
         'data': author_schema.dump(author)
-    }, 201
+    }
 
 
 @author_bp.route('/authors/<int:id>', methods=['DELETE'])
-@auth.login_required
 def delete_author(id: int):
     """
     Deletes the author with the given ID.

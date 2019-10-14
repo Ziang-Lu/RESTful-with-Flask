@@ -28,6 +28,11 @@ def create_app(config_class=Config) -> Flask:
     ma.init_app(app)  # Order matters: Initialize SQLAlchemy before Marshmallow
     bcrypt.init_app(app)
 
+    # Authentication-related stuff
+    from .utils import verify_password_or_token
+    from sample_flask.naive_api.auth import auth_bp
+    app.register_blueprint(auth_bp)
+
     # Naive implementation:
     # from sample_flask.naive_api.author import author_bp
     # app.register_blueprint(author_bp)
@@ -37,10 +42,6 @@ def create_app(config_class=Config) -> Flask:
     # Implementation with extension:
     from sample_flask.api import api_bp
     app.register_blueprint(api_bp)
-
-    # Authentication-related stuff
-    from sample_flask.naive_api.auth import auth_bp
-    app.register_blueprint(auth_bp)
 
     # Initialize the database
     with app.app_context():

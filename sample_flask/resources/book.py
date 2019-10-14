@@ -89,7 +89,7 @@ class BookItem(Resource):
         return {
             'status': 'success',
             'data': book_schema.dump(book)
-        }, 201
+        }
 
     def delete(self, id: int):
         """

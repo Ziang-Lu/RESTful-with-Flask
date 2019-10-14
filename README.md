@@ -145,6 +145,8 @@ According to the author of `flask-httpauth` in his article https://blog.miguelgr
 
 * Maintain a `users` table of registered users
 
+  * For this, we defined `User` data model and `UserSchema` for serialization/deserialization.
+
 * The client needs to provide credentials in every request they send.
 
   1. Provide username-password combination in every request

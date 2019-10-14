@@ -61,6 +61,7 @@ class User(db.Model):
     __tablename__ = 'users'
 
     USERNAME_MAX_LEN = 120
+    PASSWORD_MIN_LEN = 8
     PASSWORD_MAX_LEN = 60
 
     id = db.Column(db.Integer, primary_key=True)
@@ -76,7 +77,7 @@ class User(db.Model):
         :return: tuple
         """
         serializer = Serializer(
-            secret_key=Config.SECRET_KEY, expire_in=expiration
+            secret_key=Config.SECRET_KEY, expires_in=expiration
         )
         return serializer.dumps({'id': self.id}), expiration
 
@@ -112,8 +113,12 @@ class AuthorSchema(ma.Schema):
         'BookSchema', many=True, only=('title', 'url_self'), dump_only=True
     )
 
-    url_self = ma.URLFor('author.get_author_by_id', id='<id>', _external=True)
-    url_collection = ma.URLFor('author.get_authors', _external=True)
+    # For naive implementation and implementation with extension, we need to
+    # refer to different endpoints.
+    # url_self = ma.URLFor('author.get_author_by_id', id='<id>', _external=True)
+    url_self = ma.URLFor('api.authors', id='<id>', _external=True)
+    # url_collection = ma.URLFor('author.get_authors', _external=True)
+    url_collection = ma.URLFor('api.author', _external=True)
 
     class Meta:
         unknown = EXCLUDE  # When encountering a unknown fields, simply exclude it
@@ -153,8 +158,12 @@ class BookSchema(ma.Schema):
     )
     date_published = fields.Date()
 
-    url_self = ma.URLFor('book.get_book_by_id', id='<id>', _external=True)
-    url_collection = ma.URLFor('book.get_books', _external=True)
+    # For naive implementation and implementation with extension, we need to
+    # refer to different endpoints.
+    # url_self = ma.URLFor('book.get_book_by_id', id='<id>', _external=True)
+    url_self = ma.URLFor('api.books', id='<id>', _external=True)
+    # url_collection = ma.URLFor('book.get_books', _external=True)
+    url_collection = ma.URLFor('book.book', _external=True)
 
     class Meta:
         unknown = EXCLUDE
@@ -189,7 +198,9 @@ class UserSchema(ma.Schema):
     )
     password = fields.Str(
         required=True,
-        validate=validate.Length(min=1, max=User.PASSWORD_MAX_LEN),
+        validate=validate.Length(
+            min=User.PASSWORD_MIN_LEN, max=User.PASSWORD_MAX_LEN
+        ),
         load_only=True
     )
 

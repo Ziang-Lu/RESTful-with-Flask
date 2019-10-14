@@ -13,8 +13,19 @@ from ..models import Book, book_schema, books_schema
 book_bp = Blueprint(name='book', import_name=__name__)
 
 
-@book_bp.route('/books')
+@book_bp.before_request
 @auth.login_required
+def before_request() -> None:
+    """
+    Before all the request to be handled by "book_bp" blueprint, do login check.
+    This is done to avoid all the routes registered on this blueprint having to
+    be explicitly decorated with "auth.login_required".
+    :return: None
+    """
+    pass
+
+
+@book_bp.route('/books')
 def get_books():
     """
     Returns all the books.
@@ -28,7 +39,6 @@ def get_books():
 
 
 @book_bp.route('/books', methods=['POST'])
-@auth.login_required
 def add_book():
     """
     Adds a new book.
@@ -49,7 +59,6 @@ def add_book():
 
 
 @book_bp.route('/books/<int:id>')
-@auth.login_required
 def get_book_by_id(id: int):
     """
     Returns the book with the given ID.
@@ -64,7 +73,6 @@ def get_book_by_id(id: int):
 
 
 @book_bp.route('/books/<int:id>', methods=['PUT'])
-@auth.login_required
 def update_book(id: int):
     """
     Updates the book with the given ID.
@@ -88,11 +96,10 @@ def update_book(id: int):
     return {
         'status': 'success',
         'data': book_schema.dump(book)
-    }, 201
+    }
 
 
 @book_bp.route('/books/<int:id>', methods=['DELETE'])
-@auth.login_required
 def delete_book(id: int):
     """
     Deletes the book with the given ID.

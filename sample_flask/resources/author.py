@@ -97,7 +97,7 @@ class AuthorItem(Resource):
         return {
             'status': 'success',
             'data': author_schema.dump(author)
-        }, 201
+        }
 
     def delete(self, id: int):
         """
