@@ -1,0 +1,12 @@
+.DS_Store
+
+# Python compilation files
+__pycache__/
+*.pyc
+
+# SQLite database files
+bookstore/*.db
+
+# Docker-related files
+Dockerfile
+.dockerignore

@@ -17,7 +17,7 @@ class UserItem(Resource):
     Resource for a single user.
     """
 
-    def post():
+    def post(self):
         """
         Adds a new user.
         :return:
@@ -54,7 +54,7 @@ class Token(Resource):
     """
     decorators = [auth.login_required]
 
-    def get():
+    def get(self):
         """
         Gets a token for the current logged-in user.
         :return:

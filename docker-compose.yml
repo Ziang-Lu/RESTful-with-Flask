@@ -1,0 +1,43 @@
+version: "3.7"
+
+services:
+
+  nginx:
+    depends_on:
+      - flask
+    build: ./nginx_web_server
+    ports:
+      # Bind container port 80 to the host port 80
+      - "80:80"
+    restart: always
+
+  flask:
+    depends_on:
+      - db
+    build: ./bookstore
+    expose:
+      # Since we'll use Gunicorn to run the application, we need to expose its
+      # default port 8000, rather than the default port 5000 of Flask
+      # development server.
+      - 8000
+      # Note that this port is only exposed to other services in the same
+      # network, but not to outside world
+    restart: always
+
+  db:  # Note that this is also the hostname of the "db" service container
+    image: postgres:9.6
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=bookstore
+    # Persist the data stored in the database into a Docker volume
+    volumes:
+      - db_volume:/var/lib/postgresql/data
+    expose:
+      - 5432
+      # Note that this port is only exposed to other services in the same
+      # network, but not to outside world
+    restart: always
+
+volumes:
+  db_volume:

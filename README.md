@@ -146,6 +146,7 @@ According to the author of `flask-httpauth` in his article https://blog.miguelgr
 * Maintain a `users` table of registered users
 
   * For this, we defined `User` data model and `UserSchema` for serialization/deserialization.
+    * POST `/users` with `username:password` authentication credentials creates a new user
 
 * The client needs to provide credentials in every request they send.
 
@@ -153,8 +154,10 @@ According to the author of `flask-httpauth` in his article https://blog.miguelgr
 
   2. Send username-password to the server, and get back a token.
 
-     This token is only valid for some time, i.e., has an expiration time. During this period of time, the user can simply provide this token as the credential.
+     * GET `/token` with `username:password` or `token:<any-password>` authentication credentials to get a token for that user
 
+     This token is only valid for some time, i.e., has an expiration time. During this period of time, the user can simply provide this token as the credential.
+     
      In this way, the authentication mechanism becomes much simpler, and even safer since the token is only valid for some time.
 
 ***

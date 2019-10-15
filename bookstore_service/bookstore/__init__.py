@@ -29,18 +29,18 @@ def create_app(config_class=Config) -> Flask:
     bcrypt.init_app(app)
 
     # Authentication-related stuff
-    from .utils import verify_password_or_token
-    from sample_flask.naive_api.auth import auth_bp
-    app.register_blueprint(auth_bp)
+    # from .utils import verify_password_or_token
+    # from .naive_api.auth import auth_bp
+    # app.register_blueprint(auth_bp)
 
     # Naive implementation:
-    # from sample_flask.naive_api.author import author_bp
+    # from .naive_api.author import author_bp
     # app.register_blueprint(author_bp)
-    # from sample_flask.naive_api.book import book_bp
+    # from .naive_api.book import book_bp
     # app.register_blueprint(book_bp)
 
     # Implementation with extension:
-    from sample_flask.api import api_bp
+    from .api import api_bp
     app.register_blueprint(api_bp)
 
     # Initialize the database

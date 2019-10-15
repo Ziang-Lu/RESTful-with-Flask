@@ -1,9 +1,9 @@
 from flask import Blueprint
 from flask_restful import Api
 
-from sample_flask.resources.author import AuthorList, AuthorItem
-from sample_flask.resources.book import BookList, BookItem
-from sample_flask.resources.auth import Token, UserItem
+from .resources.auth import Token, UserItem
+from .resources.author import AuthorItem, AuthorList
+from .resources.book import BookItem, BookList
 
 # Create a API-related blueprint
 api_bp = Blueprint(name='api', import_name=__name__)
