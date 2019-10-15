@@ -14,7 +14,7 @@ services:
   flask:
     depends_on:
       - db
-    build: ./bookstore
+    build: ./bookstore_service
     expose:
       # Since we'll use Gunicorn to run the application, we need to expose its
       # default port 8000, rather than the default port 5000 of Flask

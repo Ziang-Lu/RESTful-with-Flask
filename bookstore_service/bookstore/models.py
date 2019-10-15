@@ -7,11 +7,11 @@ Flask models module.
 from datetime import datetime
 from typing import Tuple
 
+from flask import current_app
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from marshmallow import EXCLUDE, fields, post_load, validate
 
 from . import db, ma
-from .config import Config
 
 ##### MODELS #####
 
@@ -77,7 +77,7 @@ class User(db.Model):
         :return: tuple
         """
         serializer = Serializer(
-            secret_key=Config.SECRET_KEY, expires_in=expiration
+            secret_key=current_app['SECRET_KEY'], expires_in=expiration
         )
         return serializer.dumps({'id': self.id}), expiration
 

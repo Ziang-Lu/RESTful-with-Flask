@@ -6,7 +6,7 @@ Utilify functions.
 
 from typing import Optional
 
-from flask import g
+from flask import current_app, g
 from itsdangerous import (
     BadSignature, SignatureExpired,
     TimedJSONWebSignatureSerializer as Serializer
@@ -47,7 +47,7 @@ def _verify_token(token: str) -> Optional[User]:
     :param token: str
     :return: User or None
     """
-    serializer = Serializer(secret_key=Config.SECRET_KEY)
+    serializer = Serializer(secret_key=current_app['SECRET_KEY'])
     try:
         data = serializer.loads(token)
     except SignatureExpired:  # Valid token, but expired
