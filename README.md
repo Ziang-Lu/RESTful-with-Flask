@@ -162,3 +162,17 @@ According to the author of `flask-httpauth` in his article https://blog.miguelgr
 
 ***
 
+<br>
+
+## Deployment
+
+The deployment of this web services follows the Docker-way, i.e., with **Linux Server** + **Web Server (in `Docker` container) [`nginx`]** + **Python Web App WSGI Server [`Gunicorn`]**
+
+Check out https://github.com/Ziang-Lu/Flask-Blog/blob/master/Deployment%20Options.md#2-linux-server--web-server-in-docker-container--python-web-app-wsgi-server-in-docker-container
+
+<br>
+
+## License
+
+This repo is distributed under the <a href="https://github.com/Ziang-Lu/RESTful-with-Flask/blob/master/LICENSE">MIT license</a>.
+

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Utilify functions.
+Utility functions.
 """
 
 from typing import Optional

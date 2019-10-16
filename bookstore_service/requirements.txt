@@ -1,7 +1,7 @@
 -i https://pypi.org/simple
 aniso8601==8.0.0
 bcrypt==3.1.7
-cffi==1.12.3
+cffi==1.13.0
 click==7.0
 flask-bcrypt==0.7.1
 flask-httpauth==3.3.0
@@ -15,6 +15,7 @@ jinja2==2.10.3
 markupsafe==1.1.1
 marshmallow-sqlalchemy==0.19.0
 marshmallow==3.2.1
+psycopg2-binary==2.8.3
 pycparser==2.19
 pytz==2019.3
 six==1.12.0
