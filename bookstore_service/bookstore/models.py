@@ -47,7 +47,7 @@ class Book(db.Model):
         db.Integer, db.ForeignKey('authors.id', ondelete='CASCADE'),
         nullable=False
     )
-    author = db.relationship(Author, backref='books', lazy=True)
+    author = db.relationship(Author, backref=db.backref('books', lazy=True))  # Define the lazy status for the backref
     date_published = db.Column(db.Date, nullable=False, default=datetime.today)
 
     def __repr__(self):
