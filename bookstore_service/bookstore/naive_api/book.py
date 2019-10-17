@@ -7,10 +7,13 @@ Book-related RESTful API module.
 from flask import Blueprint, request
 from marshmallow import ValidationError
 
-from .. import auth, db
+from .. import auth, db, limiter
 from ..models import Book, book_schema, books_schema
+from ..utils import RATELIMIT_NORMAL
 
 book_bp = Blueprint(name='book', import_name=__name__)
+# Rate-limit all the routes registered on this blueprint.
+limiter.limit(RATELIMIT_NORMAL)(book_bp)
 
 
 @book_bp.before_request

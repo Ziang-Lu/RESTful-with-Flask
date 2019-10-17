@@ -14,6 +14,7 @@ services:
   flask:
     depends_on:
       - db
+      - rate-limiting
     build: ./bookstore_service
     expose:
       # Since we'll use Gunicorn to run the application, we need to expose its
@@ -35,6 +36,14 @@ services:
       - db_volume:/var/lib/postgresql/data
     expose:
       - 5432
+      # Note that this port is only exposed to other services in the same
+      # network, but not to outside world
+    restart: always
+
+  rate-limiting:  # Note that this is also the hostname of the "rate-limiting" service container
+    image: redis
+    expose:
+      - 6379
       # Note that this port is only exposed to other services in the same
       # network, but not to outside world
     restart: always

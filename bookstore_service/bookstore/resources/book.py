@@ -8,15 +8,19 @@ from flask import request
 from flask_restful import Resource
 from marshmallow import ValidationError
 
-from .. import auth, db
+from .. import auth, db, limiter
 from ..models import Book, book_schema, books_schema
+from ..utils import RATELIMIT_NORMAL
 
 
 class BookList(Resource):
     """
     Resource for a collection of books.
     """
-    decorators = [auth.login_required]
+    decorators = [
+        auth.login_required,
+        limiter.limit(RATELIMIT_NORMAL, per_method=True)
+    ]
 
     def get(self):
         """

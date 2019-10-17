@@ -16,6 +16,8 @@ flask-bcrypt = "*"
 flask-httpauth = "*"
 gunicorn = "*"
 psycopg2-binary = "*"
+flask-limiter = "*"
+redis = "*"
 
 [requires]
 python_version = "3.7"

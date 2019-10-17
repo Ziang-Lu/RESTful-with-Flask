@@ -1,15 +1,21 @@
-from flask import Flask
+from flask import Flask, g
 from flask_bcrypt import Bcrypt
 from flask_httpauth import HTTPBasicAuth
+from flask_limiter import Limiter
 from flask_marshmallow import Marshmallow
 from flask_sqlalchemy import SQLAlchemy
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 from .config import Config
+from .utils import RATELIMIT_DEFAULT
 
 db = SQLAlchemy()
 ma = Marshmallow()
 bcrypt = Bcrypt()
 auth = HTTPBasicAuth()
+limiter = Limiter(
+    default_limits=[RATELIMIT_DEFAULT], key_func=lambda: g.user.username
+)  # Since most of the time, rate limiting is done after authentication, we can use "g.user.username" as the key.
 
 
 def create_app(config_class=Config) -> Flask:
@@ -24,6 +30,11 @@ def create_app(config_class=Config) -> Flask:
     db.init_app(app)
     ma.init_app(app)  # Order matters: Initialize SQLAlchemy before Marshmallow
     bcrypt.init_app(app)
+    # Since we'll place this web service behind a proxy server (Nginx), in order
+    # to get the correct remote address from "X-Forwarded-For" header, we need
+    # to do some extra setup here.
+    app.wsgi_app = ProxyFix(app.wsgi_app, num_proxies=1)
+    limiter.init_app(app)
 
     # Authentication-related stuff
     # from .utils import verify_password_or_token

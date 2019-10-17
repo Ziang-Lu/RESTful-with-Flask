@@ -13,15 +13,19 @@ from flask import request
 from flask_restful import Resource
 from marshmallow import ValidationError
 
-from .. import auth, db
+from .. import auth, db, limiter
 from ..models import Author, author_schema, authors_schema
+from ..utils import RATELIMIT_NORMAL
 
 
 class AuthorList(Resource):
     """
     Resource for a collection of authors.
     """
-    decorators = [auth.login_required]
+    decorators = [
+        auth.login_required,
+        limiter.limit(RATELIMIT_NORMAL, per_method=True)
+    ]
 
     def get(self):
         """

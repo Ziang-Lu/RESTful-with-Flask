@@ -5,15 +5,18 @@ Authentication-related RESTful API module.
 """
 
 from flask import Blueprint, g, request
+from flask_limiter.util import get_remote_address
 from marshmallow import ValidationError
 
-from .. import auth, bcrypt, db
+from .. import auth, bcrypt, db, limiter
 from ..models import User, user_schema
+from ..utils import RATELIMIT_NORMAL, RATELIMIT_SLOW
 
 auth_bp = Blueprint(name='auth', import_name=__name__)
 
 
 @auth_bp.route('/users', methods=['POST'])
+@limiter.limit(RATELIMIT_NORMAL, key_func=get_remote_address)  # For this route, since we don't do authentication, we need to use the remote address as the rate-limiting key.
 def add_user():
     """
     Adds a new user.
@@ -47,12 +50,13 @@ def add_user():
 
 @auth_bp.route('/token')
 @auth.login_required
+@limiter.limit(RATELIMIT_SLOW)
 def get_token():
     """
     Gets a token for the current logged-in user.
     :return:
     """
-    # After loggin in, we can access the user with "g.user"
+    # After logging in, we can access the user with "g.user"
     token, duration = g.user.generate_token()
     return {
         'token': token.decode('ascii'),

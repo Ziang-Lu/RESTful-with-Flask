@@ -4,15 +4,17 @@
 Author-related RESTful API module.
 """
 
-from typing import Any
-
 from flask import Blueprint, request
 from marshmallow import ValidationError
 
-from .. import auth, db
+from .. import auth, db, limiter
 from ..models import Author, author_schema, authors_schema
+from ..utils import RATELIMIT_NORMAL
 
 author_bp = Blueprint(name='author', import_name=__name__)
+# Rate-limit all the routes registered on this blueprint.
+limiter.limit(RATELIMIT_NORMAL)(author_bp)
+
 
 @author_bp.before_request
 @auth.login_required

@@ -13,7 +13,6 @@ from itsdangerous import (
 )
 
 from . import auth, bcrypt
-from .config import Config
 from .models import User
 
 
@@ -55,3 +54,8 @@ def _verify_token(token: str) -> Optional[User]:
     except BadSignature:  # Invalid token
         return None
     return User.query.get(data['id'])
+
+
+RATELIMIT_DEFAULT = '1 per second'
+RATELIMIT_NORMAL = '20 per minute'
+RATELIMIT_SLOW = '1 per minute'

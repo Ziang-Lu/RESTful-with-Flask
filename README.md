@@ -18,7 +18,17 @@ In this way, we can have a <u>lightweight web application (maybe even only the f
 
 e.g., A traditional e-commerce web application may be splitted into the following services/resources:
 
-<img src="https://github.com/Ziang-Lu/Flask-Restful/blob/master/RESTful%20Architecture.png?raw=true">
+<img src="https://github.com/Ziang-Lu/RESTful-with-Flask/blob/master/RESTful%20Architecture.png?raw=true">
+
+<br>
+
+***
+
+### "Microservice" Architecture
+
+<img src="https://github.com/Ziang-Lu/RESTful-with-Flask/blob/master/Microservice%20Architecture.png?raw=true">
+
+***
 
 <br>
 
@@ -66,14 +76,14 @@ In other words, the server cannot store information provided by the client in on
 
 * 因为<u>server-side和client-side之间, 除了每次**独立地处理request**, 彼此没有任何信息 ("彼此不认识")</u>
 
-  => 使得整个web application的各个component彼此相对独立, 更加灵活
+  => 使得整个web app的各个component彼此相对独立, 更加灵活
 
-  => 使得整个web application可以更scalable:
+  => 使得整个web app可以更scalable:
 
   * 不断地增多server数量
   * 增多可以支持的client-side种类
 
-<img src="https://github.com/Ziang-Lu/Flask-Restful/blob/master/Scalable%20RESTful.png?raw=true">
+<img src="https://github.com/Ziang-Lu/RESTful-with-Flask/blob/master/Scalable%20RESTful.png?raw=true">
 
 ***
 
@@ -87,9 +97,9 @@ API传递的只是resource的"表示", 而不是resource本身, 而<u>`json`为�
 
 <br>
 
-## Documentation of this RESTful API
+## Documentation of Web Service RESTful API
 
-There are two resources on this Flask application:
+In this project, we implemented a <u>"bookstore" web service in RESTful-architecture, which has `author`s and `book`s associated with them as the two resources</u>, based on a simple `Flask` application.
 
 * `Author`
 
@@ -112,28 +122,30 @@ There are two resources on this Flask application:
 
   Similar to `Author`
 
-***
 
-**Implementation Detail**
 
-Basically, there are two ways to implement this RESTful API:
+### `Flask` Implementation Detail
 
-1. Naive implementation with view functions
-2. Implementation with extension
-  
-   * `flask_restful` for defining resources
-   
-   * `flask_restplus` for defining resources
-   
-     Basically, this is very similar to `flask_restful`, since originaly this project was forked from `flask_restful`. The biggest advantage over `flask_restful` is the auto-generated documentation using `Swagger` UI.
-   
-     *(In my implementation, I simply used `flask_restful`. For the usage of `flask_restplus` and `Swagger` UI, check out their documentation: https://flask-restplus.readthedocs.io/en/stable/)*
+* Basically, there are two ways to implement this web service:
 
-But either way can use `marshmallow`/`flask_marshmallow` for schema definition & deserialization (including validation) / serialization.
+  1. Naive implementation with view functions
 
-***
+  2. Implementation with extension
 
-**Note on web service security**
+     * `flask_restful` for defining resources
+
+     * `flask_restplus` for defining resources
+
+       Basically, this is very similar to `flask_restful`, since originaly this project was forked from `flask_restful`. The biggest advantage over `flask_restful` is the auto-generated documentation using `Swagger` UI.
+
+       *(In my implementation, I simply used `flask_restful`. For the usage of `flask_restplus` and `Swagger` UI, check out their documentation: https://flask-restplus.readthedocs.io/en/stable/)*
+
+* But either way can use `marshmallow`/`flask_marshmallow` for schema definition & deserialization (including validation) / serialization.
+* This web service is backed by `PostgreSQL` database.
+
+
+
+### Note on web service security
 
 For this web service that we wrote, it is <u>open to anyone</u>, which is <u>very unsafe</u>.
 
@@ -160,15 +172,21 @@ According to the author of `flask-httpauth` in his article https://blog.miguelgr
      
      In this way, the authentication mechanism becomes much simpler, and even safer since the token is only valid for some time.
 
-***
 
-<br>
 
-## Deployment
+### Deployment
 
 The deployment of this web services follows the Docker-way, i.e., with **Linux Server** + **Web Server (in `Docker` container) [`nginx`]** + **Python Web App WSGI Server [`Gunicorn`]**
 
 Check out https://github.com/Ziang-Lu/Flask-Blog/blob/master/Deployment%20Options.md#2-linux-server--web-server-in-docker-container--python-web-app-wsgi-server-in-docker-container
+
+***
+
+For a modern web application described at the very beginning, it can be deployed in `Docker` containers as such:
+
+<img src="https://github.com/Ziang-Lu/RESTful-with-Flask/blob/master/Dockerized%20Web%20Services.png?raw=true">
+
+***
 
 <br>
 

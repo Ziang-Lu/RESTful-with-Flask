@@ -5,17 +5,24 @@ Authentication-related RESTful API module.
 """
 
 from flask import g, request
+from flask_limiter.util import get_remote_address
 from flask_restful import Resource
 from marshmallow import ValidationError
 
-from .. import auth, bcrypt, db
+from .. import auth, bcrypt, db, limiter
 from ..models import User, user_schema
+from ..utils import RATELIMIT_NORMAL, RATELIMIT_SLOW
 
 
 class UserItem(Resource):
     """
     Resource for a single user.
     """
+    decorators = [
+        limiter.limit(
+            RATELIMIT_NORMAL, key_func=get_remote_address, per_method=True
+        )
+    ]
 
     def post(self):
         """
@@ -52,7 +59,10 @@ class Token(Resource):
     """
     Resource for token.
     """
-    decorators = [auth.login_required]
+    decorators = [
+        auth.login_required,
+        limiter.limit(RATELIMIT_SLOW, per_method=True)
+    ]
 
     def get(self):
         """
