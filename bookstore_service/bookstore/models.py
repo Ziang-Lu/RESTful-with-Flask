@@ -48,6 +48,7 @@ class Book(db.Model):
         nullable=False
     )
     author = db.relationship(Author, backref=db.backref('books', lazy=True))  # Define the lazy status for the backref
+    description = db.Column(db.Text)
     date_published = db.Column(db.Date, nullable=False, default=datetime.today)
 
     def __repr__(self):
@@ -156,6 +157,7 @@ class BookSchema(ma.Schema):
     author = fields.Nested(
         AuthorSchema, required=True, only=('name', 'url_self')
     )
+    description = fields.Str()
     date_published = fields.Date()
 
     # For naive implementation and implementation with extension, we need to

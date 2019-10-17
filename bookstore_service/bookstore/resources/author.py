@@ -11,11 +11,12 @@ But here, we need to split the same "Author" resource into two resources, i.e.,
 
 from flask import request
 from flask_restful import Resource
+from flask_sqlalchemy import BaseQuery
 from marshmallow import ValidationError
 
 from .. import auth, db, limiter
 from ..models import Author, author_schema, authors_schema
-from ..utils import RATELIMIT_NORMAL
+from ..utils import RATELIMIT_NORMAL, paginate
 
 
 class AuthorList(Resource):
@@ -27,16 +28,14 @@ class AuthorList(Resource):
         limiter.limit(RATELIMIT_NORMAL, per_method=True)
     ]
 
-    def get(self):
+    @paginate(authors_schema)
+    def get(self) -> BaseQuery:
         """
         Returns all the authors.
-        :return:
+        :return: BaseQuery
         """
-        authors = Author.query.all()
-        return {
-            'status': 'success',
-            'data': authors_schema.dump(authors)
-        }
+        # For pagination, we need to return a query that hasn't run yet.
+        return Author.query
 
     def post(self):
         """

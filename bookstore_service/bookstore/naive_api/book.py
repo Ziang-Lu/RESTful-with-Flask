@@ -5,11 +5,12 @@ Book-related RESTful API module.
 """
 
 from flask import Blueprint, request
+from flask_sqlalchemy import BaseQuery
 from marshmallow import ValidationError
 
 from .. import auth, db, limiter
 from ..models import Book, book_schema, books_schema
-from ..utils import RATELIMIT_NORMAL
+from ..utils import RATELIMIT_NORMAL, paginate
 
 book_bp = Blueprint(name='book', import_name=__name__)
 # Rate-limit all the routes registered on this blueprint.
@@ -29,16 +30,14 @@ def before_request() -> None:
 
 
 @book_bp.route('/books')
-def get_books():
+@paginate(books_schema)
+def get_books() -> BaseQuery:
     """
     Returns all the books.
-    :return:
+    :return: BaseQuery
     """
-    books = Book.query.all()
-    return {
-        'status': 'success',
-        'data': books_schema.dump(books)
-    }
+    # For pagination, we need to return a query that hasn't run yet.
+    return Book.query
 
 
 @book_bp.route('/books', methods=['POST'])
@@ -95,6 +94,8 @@ def update_book(id: int):
         book.title = updated_book.title
     if updated_book.author:
         book.author = updated_book.author
+    if updated_book.description:
+        book.description = updated_book.description
     db.session.commit()
     return {
         'status': 'success',

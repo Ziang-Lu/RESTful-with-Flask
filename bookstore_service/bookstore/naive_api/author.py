@@ -5,11 +5,12 @@ Author-related RESTful API module.
 """
 
 from flask import Blueprint, request
+from flask_sqlalchemy import BaseQuery
 from marshmallow import ValidationError
 
 from .. import auth, db, limiter
 from ..models import Author, author_schema, authors_schema
-from ..utils import RATELIMIT_NORMAL
+from ..utils import RATELIMIT_NORMAL, paginate
 
 author_bp = Blueprint(name='author', import_name=__name__)
 # Rate-limit all the routes registered on this blueprint.
@@ -30,16 +31,14 @@ def before_request() -> None:
 
 
 @author_bp.route('/authors')
-def get_authors():
+@paginate(authors_schema)
+def get_authors() -> BaseQuery:
     """
     Returns all the authors.
-    :return:
+    :return: BaseQuery
     """
-    authors = Author.query.all()
-    return {
-        'status': 'success',
-        'data': authors_schema.dump(authors)
-    }
+    # For pagination, we need to return a query that hasn't run yet.
+    return Author.query
 
 
 @author_bp.route('/authors', methods=['POST'])

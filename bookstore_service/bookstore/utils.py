@@ -4,9 +4,11 @@
 Utility functions.
 """
 
-from typing import Optional
+import functools
+from typing import Callable, Optional
 
-from flask import current_app, g
+from flask import current_app, g, request, url_for
+from flask_marshmallow import Schema
 from itsdangerous import (
     BadSignature, SignatureExpired,
     TimedJSONWebSignatureSerializer as Serializer
@@ -54,6 +56,66 @@ def _verify_token(token: str) -> Optional[User]:
     except BadSignature:  # Invalid token
         return None
     return User.query.get(data['id'])
+
+
+def paginate(collection_schema: Schema, max_per_page: int=10) -> Callable:
+    """
+    Pagination decorator, with the collections serialized using the given
+    collection schema.
+    :param collection_schema: Schema
+    :param max_per_page: int
+    :return: Callable
+    """
+    def decorator(f: Callable) -> Callable:
+
+        @functools.wraps(f)
+        def wrapper(*args, **kwargs):
+            page = request.args.get('page', type=int, default=1)
+            per_page = min(
+                request.args.get('per_page', type=int, default=10), max_per_page
+            )
+
+            query = f(*args, **kwargs)
+            p = query.paginate(page=page, per_page=per_page)
+            # "p" is a Pagination object.
+
+            # Populate the pagination metadata
+            pagination_meta = {
+                'page': page,
+                'per_page': per_page,
+                'pages': p.pages,
+                'total': p.total,
+            }
+            if p.has_prev:
+                pagination_meta['prev'] = url_for(
+                    request.endpoint, page=p.prev_num, per_page=per_page,
+                    _external=True
+                )
+            else:
+                pagination_meta['prev'] = None
+            if p.has_next:
+                pagination_meta['next'] = url_for(
+                    request.endpoint, page=p.next_num, per_page=per_page,
+                    _external=True
+                )
+            else:
+                pagination_meta['next'] = None
+            pagination_meta['first'] = url_for(
+                request.endpoint, page=1, per_page=per_page, _external=True
+            )
+            pagination_meta['last'] = url_for(
+                request.endpoint, page=p.pages, per_page=per_page,
+                _external=True
+            )
+
+            return {
+                'status': 'success',
+                'data': collection_schema.dump(p.items),
+                'pagination_meta': pagination_meta
+            }, 200
+        return wrapper
+
+    return decorator
 
 
 RATELIMIT_DEFAULT = '1 per second'

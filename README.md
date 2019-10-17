@@ -105,22 +105,27 @@ In this project, we implemented a <u>"bookstore" web service in RESTful-architec
 
   Route: `/authors`
 
-  | Method | Description              | Response Status Code                            |
-  | ------ | ------------------------ | ----------------------------------------------- |
-  | GET    | Returns all the products | 200 on success                                  |
-  | POST   | Creates a new product    | 201 on success, 400 on not enough data provided |
+  | Method | Description              | Request Data Schema                          | Response Status Code                            |
+  | ------ | ------------------------ | -------------------------------------------- | ----------------------------------------------- |
+  | GET    | Returns all the products |                                              | 200 on success                                  |
+  | POST   | Creates a new product    | `name`: string<br>`email`: string [optional] | 201 on success, 400 on not enough data provided |
 
   Route: `/authors/<id>`
 
-  | Method | Description                              | Reponse Status Code                                          |
-  | ------ | ---------------------------------------- | ------------------------------------------------------------ |
-  | GET    | Returns the author with the specified ID | 200 on success, 404 on product not found                     |
-  | PUT    | Updates the author with the specified ID | 200 on success, 400 on invalid data provided, 404 on product not found |
-  | DELETE | Deletes the author with the specified ID | 204 on success, 404 on product not found                     |
+  | Method | Description                              | Request Data Schema                                     | Reponse Status Code                                          |
+  | ------ | ---------------------------------------- | ------------------------------------------------------- | ------------------------------------------------------------ |
+  | GET    | Returns the author with the specified ID |                                                         | 200 on success, 404 on product not found                     |
+  | PUT    | Updates the author with the specified ID | `name`: string [optional]<br>`email`: string [optional] | 200 on success, 400 on invalid data provided, 404 on product not found |
+  | DELETE | Deletes the author with the specified ID |                                                         | 204 on success, 404 on product not found                     |
 
 * `Book`
 
-  Similar to `Author`
+  Similar to `Author`, but with request data schema as follows:
+  
+  | Field name    | Type   | Required ? |
+  | ------------- | ------ | ---------- |
+  | `title`       | string | True       |
+  | `description` | string | False      |
 
 
 

@@ -6,11 +6,12 @@ Book-related RESTful API module.
 
 from flask import request
 from flask_restful import Resource
+from flask_sqlalchemy import BaseQuery
 from marshmallow import ValidationError
 
 from .. import auth, db, limiter
 from ..models import Book, book_schema, books_schema
-from ..utils import RATELIMIT_NORMAL
+from ..utils import RATELIMIT_NORMAL, paginate
 
 
 class BookList(Resource):
@@ -22,16 +23,14 @@ class BookList(Resource):
         limiter.limit(RATELIMIT_NORMAL, per_method=True)
     ]
 
-    def get(self):
+    @paginate(books_schema)
+    def get(self) -> BaseQuery:
         """
-        Returns all the books.
-        :return:
+        Returns all the authors.
+        :return: BaseQuery
         """
-        books = Book.query.all()
-        return {
-            'status': 'success',
-            'data': books_schema.dump(books)
-        }
+        # For pagination, we need to return a query that hasn't run yet.
+        return Book.query
 
     def post(self):
         """
@@ -89,6 +88,8 @@ class BookItem(Resource):
             book.title = updated_book.title
         if updated_book.author:
             book.author = updated_book.author
+        if updated_book.description:
+            book.description = updated_book.description
         db.session.commit()
         return {
             'status': 'success',
