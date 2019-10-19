@@ -7,15 +7,26 @@ from flask_sqlalchemy import SQLAlchemy
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 from .config import Config
-from .utils import RATELIMIT_DEFAULT
 
 db = SQLAlchemy()
 ma = Marshmallow()
 bcrypt = Bcrypt()
 auth = HTTPBasicAuth()
-limiter = Limiter(
-    default_limits=[RATELIMIT_DEFAULT], key_func=lambda: g.user.username
-)  # Since most of the time, rate limiting is done after authentication, we can use "g.user.username" as the key.
+
+from .utils import RATELIMIT_DEFAULT
+
+
+def my_key_func() -> str:
+    """
+    Self-defined key function for rate limiting.
+    Since most of the time, rate limiting is done after authentication, we can
+    use "g.user.username" as the key.
+    :return: str
+    """
+    return g.user.username
+
+
+limiter = Limiter(default_limits=[RATELIMIT_DEFAULT], key_func=my_key_func)
 
 
 def create_app(config_class=Config) -> Flask:

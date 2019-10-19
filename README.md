@@ -137,15 +137,15 @@ In this project, we implemented a <u>"bookstore" web service in RESTful-architec
 
   2. Implementation with extension
 
-     * `flask_restful` for defining resources
+     * `Flask-RESTful` for defining resources
 
-     * `flask_restplus` for defining resources
+     * `Flask_RESTPlus` for defining resources
 
-       Basically, this is very similar to `flask_restful`, since originaly this project was forked from `flask_restful`. The biggest advantage over `flask_restful` is the auto-generated documentation using `Swagger` UI.
+       Basically, this is very similar to `Flask-RESTful`, since originaly this project was forked from `Flask-RESTful`. The biggest advantage over `Flask_RESTPlus` is the auto-generated documentation using `Swagger` UI.
 
-       *(In my implementation, I simply used `flask_restful`. For the usage of `flask_restplus` and `Swagger` UI, check out their documentation: https://flask-restplus.readthedocs.io/en/stable/)*
+       *(In my implementation, I simply used `Flask-RESTful`. For the usage of `Flask-RESTPlus` and `Swagger` UI, check out their documentation: https://flask-restplus.readthedocs.io/en/stable/)*
 
-* But either way can use `marshmallow`/`flask_marshmallow` for schema definition & deserialization (including validation) / serialization.
+* But either way can use `Marshmallow`/`Flask_Marshmallow` for schema definition & deserialization (including validation) / serialization.
 * This web service is backed by `PostgreSQL` database.
 
 
@@ -176,6 +176,18 @@ According to the author of `flask-httpauth` in his article https://blog.miguelgr
      This token is only valid for some time, i.e., has an expiration time. During this period of time, the user can simply provide this token as the credential.
      
      In this way, the authentication mechanism becomes much simpler, and even safer since the token is only valid for some time.
+
+
+
+### Additional Features
+
+* Rate limiting
+
+  All routes are protected by rate limiting, implemented with `Flask-Limiter` and `Redis`.
+
+* Pagination for collection result
+
+  All routes returning a collection of resources actually returns paginated results, with information about pagination metadata as well as the URLs for the previous page, next page, first page, last page, etc.
 
 
 
