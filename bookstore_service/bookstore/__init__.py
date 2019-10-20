@@ -15,6 +15,8 @@ auth = HTTPBasicAuth()
 
 from .utils import RATELIMIT_DEFAULT
 
+URL_PREFIX_V1 = '/bookstore/v1'  # For API versioning
+
 
 def my_key_func() -> str:
     """

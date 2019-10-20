@@ -8,11 +8,13 @@ from flask import Blueprint, request
 from flask_sqlalchemy import BaseQuery
 from marshmallow import ValidationError
 
-from .. import auth, db, limiter
+from .. import URL_PREFIX_V1, auth, db, limiter
 from ..models import Author, author_schema, authors_schema
 from ..utils import RATELIMIT_NORMAL, paginate
 
-author_bp = Blueprint(name='author', import_name=__name__)
+author_bp = Blueprint(
+    name='author', import_name=__name__, url_prefix=URL_PREFIX_V1
+)
 # Rate-limit all the routes registered on this blueprint.
 limiter.limit(RATELIMIT_NORMAL)(author_bp)
 

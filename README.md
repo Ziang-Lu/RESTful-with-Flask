@@ -1,6 +1,6 @@
 # Demo RESTful Architecure & API Design (based on a Flask Application)
 
-## RESTful Architecture for Web Applications
+## Service-Oriented-Architecture (SOA) (面向服务架构) for Web Applications
 
 ***
 
@@ -14,13 +14,9 @@ Now, we can <u>split these functionalities to "services".</u> <u>Each "service" 
 
 In this way, we can have a <u>lightweight web application (maybe even only the front-end)</u> at the center, and it <u>interacts with these services/resources (via the associated URI)</u>. The interaction between the application and these services is done <u>through API (to the associated URI)</u>.
 
-=> This kind of architecture is called <u>*RESTful*, which stands for "REpresentational State Transfer", architecture</u>.
-
 e.g., A traditional e-commerce web application may be splitted into the following services/resources:
 
 <img src="https://github.com/Ziang-Lu/RESTful-with-Flask/blob/master/RESTful%20Architecture.png?raw=true">
-
-<br>
 
 ***
 
@@ -32,7 +28,19 @@ e.g., A traditional e-commerce web application may be splitted into the followin
 
 <br>
 
-## RESTful API
+### (In the past) Remote-Procedure-Call (RPC) (远程过程调用)
+
+RPC风格曾是Web Service的主流, 最初是基于XML-RPC协议, 后来渐渐被SOAP协议取代. RPC风格的web service, 不仅可以用HTTP, 还可以用TCP或其他通信协议.
+
+<u>但RPC风格的web service, 受开发web service所采用的语言的束缚比较大. e.g, 使用`.NET`框架开发的web service, 其客户端通常也需要用`C#`来实现; 而进入移动互联网时代后, RPC风格的web service很难在移动终端使用.</u>
+
+详见: https://blog.igevin.info/posts/restful-architecture-in-general/
+
+<br>
+
+## RESTful Architecture & API
+
+RESTful stands for "REpresentational State Transfer".
 
 RESTful API, 也被称作"统一资源接口", 要求<u>用标准的HTTP methods (`GET`, `POST`, `PUT`, `DELETE`等) 来访问services/resources的URI, 操作对应的resource</u>.
 
@@ -89,9 +97,17 @@ In other words, the server cannot store information provided by the client in on
 
 **注意!**
 
-API传递的只是resource的"表示", 而不是resource本身, 而<u>`json`为最常见的API中resource表示形式</u>.
+API传递的只是resource的"表示", 而不是resource本身, 而<u>`JSON`为最常见的API中resource表示形式</u>.
 
 *=> 需要在request的header中指明: `Content-Type: application/json`*
+
+<br>
+
+事实上, 正是由于serialization/deserialization的便捷, 使得RESTful API可以轻松地使用`JSON`作为数据传输的载体 ("表示")
+
+=> 使得server-side和client-side的开发独立开来, 造成了RESTful架构跨平台的特点
+
+=> 使得RESTful取代RPC成为Web Service的主流
 
 ***
 
@@ -100,6 +116,8 @@ API传递的只是resource的"表示", 而不是resource本身, 而<u>`json`为�
 ## Documentation of Web Service RESTful API
 
 In this project, we implemented a <u>"bookstore" web service in RESTful-architecture, which has `author`s and `book`s associated with them as the two resources</u>, based on a simple `Flask` application.
+
+* Base URL: `/bookstore/v1`
 
 * `Author`
 
