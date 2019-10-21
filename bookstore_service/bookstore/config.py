@@ -13,6 +13,8 @@ class Config:
     # Generate the secret key using secrets.token_hex(16)
     SECRET_KEY = '8bfbeeb3da58dddc3c2b8d15cf2a1904'
 
+    APPLICATION_ROOT = 'bookstore'  # Make sure that the routes are prefixed with "/bookstore"
+
     # Configure the SQLAlchemy-related options
     postgres_user = 'postgres'
     postgres_password = 'password'

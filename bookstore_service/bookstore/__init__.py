@@ -4,7 +4,9 @@ from flask_httpauth import HTTPBasicAuth
 from flask_limiter import Limiter
 from flask_marshmallow import Marshmallow
 from flask_sqlalchemy import SQLAlchemy
-from werkzeug.middleware.proxy_fix import ProxyFix
+# from werkzeug.middleware.dispatcher import DispatcherMiddleware
+# from werkzeug.middleware.proxy_fix import ProxyFix
+from werkzeug import middleware
 
 from .config import Config
 
@@ -15,7 +17,7 @@ auth = HTTPBasicAuth()
 
 from .utils import RATELIMIT_DEFAULT
 
-URL_PREFIX_V1 = '/bookstore/v1'  # For API versioning
+URL_PREFIX_V1 = '/v1'  # For API versioning
 
 
 def my_key_func() -> str:
@@ -44,10 +46,17 @@ def create_app(config_class=Config) -> Flask:
     ma.init_app(app)  # Order matters: Initialize SQLAlchemy before Marshmallow
     bcrypt.init_app(app)
     # Since we'll place this web service behind a proxy server (Nginx), in order
-    # to get the correct remote address from "X-Forwarded-For" header, we need
-    # to do some extra setup here.
-    app.wsgi_app = ProxyFix(app.wsgi_app, num_proxies=1)
+    # for rate-liminting to get the correct remote address from
+    # "X-Forwarded-For" header, we need to do some extra setup here.
+    app.wsgi_app = middleware.proxy_fix.ProxyFix(app.wsgi_app, num_proxies=1)
     limiter.init_app(app)
+
+    # In order to make sure that all the routes are prefixed with
+    # APPLICATION_ROOT, we need to do some extra setup here.
+    app.wsgi_app = middleware.dispatcher.DispatcherMiddleware(
+        app=Flask('dummy_app'),
+        mounts={app.config['APPLICATION_ROOT']: app.wsgi_app}
+    )
 
     # Authentication-related stuff
     # from .utils import verify_password_or_token

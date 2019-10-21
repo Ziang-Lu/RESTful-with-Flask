@@ -76,9 +76,11 @@ DELETE /blog/articles/1  # Correct
 
 **"无状态原则"**
 
-<u>一个request中必须包含server (service)处理该request的全部信息 (其中包括标识该client-side的token), 而在server-side不应保存任何与client-side有关的信息, 即server-side不应保存任何与某个client-side关联的session.</u>
+*由于client-side可能需要与不止一个server进行交互: 如果在server-side保存了有关client-side的任何状态, 那么当client-side与不同server进行交互的时候 就需要在这些servers之间进行关于client-side的状态信息的同步, 大大地增加了系统的复杂度.*
 
-In other words, the server cannot store information provided by the client in one request, and use it in another request.
+<u>=> 一个request中必须包含server (service)处理该request的全部信息 (其中包括标识该client-side的token), 而在server-side不应保存任何与client-side有关的信息, 即server-side不应保存任何与某个client-side关联的session.</u>
+
+-> In other words, the server cannot store information provided by the client in one request, and use it in another request.
 
 益处:
 
@@ -118,6 +120,8 @@ API传递的只是resource的"表示", 而不是resource本身, 而<u>`JSON`为�
 In this project, we implemented a <u>"bookstore" web service in RESTful-architecture, which has `author`s and `book`s associated with them as the two resources</u>, based on a simple `Flask` application.
 
 * Base URL: `/bookstore/v1`
+
+  *Note that `/bookstore` is the application URL prefix, which is set up using `app.config['APPLICATION_ROOT']` plus proper WSGI setting, while`/v1` is hard-coded for versioning the API.*
 
 * `Author`
 
