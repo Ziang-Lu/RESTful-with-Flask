@@ -4,8 +4,6 @@ from flask_httpauth import HTTPBasicAuth
 from flask_limiter import Limiter
 from flask_marshmallow import Marshmallow
 from flask_sqlalchemy import SQLAlchemy
-# from werkzeug.middleware.dispatcher import DispatcherMiddleware
-# from werkzeug.middleware.proxy_fix import ProxyFix
 from werkzeug import middleware
 
 from .config import Config
@@ -48,7 +46,9 @@ def create_app(config_class=Config) -> Flask:
     # Since we'll place this web service behind a proxy server (Nginx), in order
     # for rate-liminting to get the correct remote address from
     # "X-Forwarded-For" header, we need to do some extra setup here.
-    app.wsgi_app = middleware.proxy_fix.ProxyFix(app.wsgi_app, num_proxies=1)
+    app.wsgi_app = middleware.proxy_fix.ProxyFix(
+        app.wsgi_app, x_for=1, x_proto=1
+    )
     limiter.init_app(app)
 
     # In order to make sure that all the routes are prefixed with

@@ -18,16 +18,13 @@ class Config:
     # Configure the SQLAlchemy-related options
     postgres_user = 'postgres'
     postgres_password = 'password'
-    # postgres_hostname = 'db'
-    postgres_hostname = 'localhost'
+    postgres_hostname = 'db'
     postgres_db = 'bookstore'
     SQLALCHEMY_DATABASE_URI = f'postgres://{postgres_user}:{postgres_password}@{postgres_hostname}/{postgres_db}'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     # Configure the Flask-Limiter related options
-    # redis_hostname = 'rate-limiting'
-    redis_hostname = 'localhost'
+    redis_hostname = 'rate-limiting'
     redis_port = 6379
     RATELIMIT_STORAGE_URL = f'redis://{redis_hostname}:{redis_port}'
-    RATELIMIT_KEY_PREFIX = 'rl'
     RATELIMIT_STRATEGY = 'fixed-window'  # To do more accurate rate limiting more, change this to "moving-window"
