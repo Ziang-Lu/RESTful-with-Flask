@@ -12,10 +12,10 @@ from .. import URL_PREFIX_V1, auth, bcrypt, db, limiter
 from ..models import User, user_schema
 from ..utils import RATELIMIT_NORMAL, RATELIMIT_SLOW
 
-auth_bp = Blueprint(import_name=__name__, url_prefix=URL_PREFIX_V1)
+auth_bp = Blueprint(name='auth', import_name=__name__, url_prefix=URL_PREFIX_V1)
 
 
-@auth_bp.route('/users', endpoint='add_user', methods=['POST'])
+@auth_bp.route('/users', methods=['POST'])
 @limiter.limit(RATELIMIT_NORMAL, key_func=get_remote_address)  # For this route, since we don't do authentication, we need to use the remote address as the rate-limiting key.
 def add_user():
     """
@@ -48,7 +48,7 @@ def add_user():
     }, 201
 
 
-@auth_bp.route('/token', endpoint='token')
+@auth_bp.route('/token')
 @auth.login_required
 @limiter.limit(RATELIMIT_SLOW)
 def get_token():

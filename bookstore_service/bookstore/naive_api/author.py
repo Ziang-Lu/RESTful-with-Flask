@@ -12,7 +12,7 @@ from .. import URL_PREFIX_V1, auth, db, limiter
 from ..models import Author, author_schema, authors_schema
 from ..utils import RATELIMIT_NORMAL, paginate
 
-author_bp = Blueprint(import_name=__name__, url_prefix=URL_PREFIX_V1)
+author_bp = Blueprint(name='author', import_name=__name__, url_prefix=URL_PREFIX_V1)
 # Rate-limit all the routes registered on this blueprint.
 limiter.limit(RATELIMIT_NORMAL)(author_bp)
 
@@ -30,7 +30,7 @@ def before_request() -> None:
     pass
 
 
-@author_bp.route('/authors', endpoint='authors')
+@author_bp.route('/authors')
 @paginate(authors_schema)
 def get_authors() -> BaseQuery:
     """
@@ -41,7 +41,7 @@ def get_authors() -> BaseQuery:
     return Author.query
 
 
-@author_bp.route('/authors', methods=['POST'], endpoint='add_author')
+@author_bp.route('/authors', methods=['POST'])
 def add_author():
     """
     Adds a new author.
@@ -62,7 +62,7 @@ def add_author():
     }, 201
 
 
-@author_bp.route('/authors/<int:id>', endpoint='author')
+@author_bp.route('/authors/<int:id>')
 def get_author_by_id(id: int):
     """
     Returns the author with the given ID.
@@ -76,7 +76,7 @@ def get_author_by_id(id: int):
     }
 
 
-@author_bp.route('/authors/<int:id>', endpoint='update_author', methods=['PUT'])
+@author_bp.route('/authors/<int:id>', methods=['PUT'])
 def update_author(id: int):
     """
     Updates the author with the given ID.
@@ -103,9 +103,7 @@ def update_author(id: int):
     }
 
 
-@author_bp.route(
-    '/authors/<int:id>', endpoint='delete_author', methods=['DELETE']
-)
+@author_bp.route('/authors/<int:id>', methods=['DELETE'])
 def delete_author(id: int):
     """
     Deletes the author with the given ID.

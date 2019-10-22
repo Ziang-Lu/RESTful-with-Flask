@@ -114,8 +114,9 @@ class AuthorSchema(ma.Schema):
         'BookSchema', many=True, only=('title', 'url_self'), dump_only=True
     )
 
-    url_self = ma.URLFor('authors', id='<id>', _external=True)
-    url_collection = ma.URLFor('author', _external=True)
+    # FIXME: For naive implementation, fix the blueprint prefix of the endpoints
+    url_self = ma.URLFor('api.authors', id='<id>', _external=True)
+    url_collection = ma.URLFor('api.author', _external=True)
 
     class Meta:
         unknown = EXCLUDE  # When encountering a unknown fields, simply exclude it
@@ -156,8 +157,9 @@ class BookSchema(ma.Schema):
     description = fields.Str()
     date_published = fields.Date()
 
+    # FIXME: For naive implementation, fix the blueprint prefix of the endpoints
     url_self = ma.URLFor('api.books', id='<id>', _external=True)
-    url_collection = ma.URLFor('book.book', _external=True)
+    url_collection = ma.URLFor('api.book', _external=True)
 
     class Meta:
         unknown = EXCLUDE
