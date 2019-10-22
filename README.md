@@ -123,31 +123,37 @@ In this project, we implemented a <u>"bookstore" web service in RESTful-architec
 
   *Note that `/bookstore` is the application URL prefix, which is set up using `app.config['APPLICATION_ROOT']` plus proper WSGI setting, while`/v1` is hard-coded for versioning the API.*
 
-* `Author`
+* API Entrance: `/bookstore/v1/`
 
-  Route: `/authors`
+  This returns some URLs that you can request to operate on the resources.
 
-  | Method | Description              | Request Data Schema                          | Response Status Code                            |
-  | ------ | ------------------------ | -------------------------------------------- | ----------------------------------------------- |
-  | GET    | Returns all the products |                                              | 200 on success                                  |
-  | POST   | Creates a new product    | `name`: string<br>`email`: string [optional] | 201 on success, 400 on not enough data provided |
+* Resources:
 
-  Route: `/authors/<id>`
+  * `Author`
 
-  | Method | Description                              | Request Data Schema                                     | Reponse Status Code                                          |
-  | ------ | ---------------------------------------- | ------------------------------------------------------- | ------------------------------------------------------------ |
-  | GET    | Returns the author with the specified ID |                                                         | 200 on success, 404 on product not found                     |
-  | PUT    | Updates the author with the specified ID | `name`: string [optional]<br>`email`: string [optional] | 200 on success, 400 on invalid data provided, 404 on product not found |
-  | DELETE | Deletes the author with the specified ID |                                                         | 204 on success, 404 on product not found                     |
+    Route: `/authors`
 
-* `Book`
+    | Method | Description              | Request Data Schema                          | Response Status Code                            |
+    | ------ | ------------------------ | -------------------------------------------- | ----------------------------------------------- |
+    | GET    | Returns all the products |                                              | 200 on success                                  |
+    | POST   | Creates a new product    | `name`: string<br>`email`: string [optional] | 201 on success, 400 on not enough data provided |
 
-  Similar to `Author`, but with request data schema as follows:
-  
-  | Field name    | Type   | Required ? |
-  | ------------- | ------ | ---------- |
-  | `title`       | string | True       |
-  | `description` | string | False      |
+    Route: `/authors/<id>`
+
+    | Method | Description                              | Request Data Schema                                     | Reponse Status Code                                          |
+    | ------ | ---------------------------------------- | ------------------------------------------------------- | ------------------------------------------------------------ |
+    | GET    | Returns the author with the specified ID |                                                         | 200 on success, 404 on product not found                     |
+    | PUT    | Updates the author with the specified ID | `name`: string [optional]<br>`email`: string [optional] | 200 on success, 400 on invalid data provided, 404 on product not found |
+    | DELETE | Deletes the author with the specified ID |                                                         | 204 on success, 404 on product not found                     |
+
+  * `Book`
+
+    Similar to `Author`, but with request data schema as follows:
+    
+    | Field name    | Type   | Required ? |
+    | ------------- | ------ | ---------- |
+    | `title`       | string | True       |
+    | `description` | string | False      |
 
 
 

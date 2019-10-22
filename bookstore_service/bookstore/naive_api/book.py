@@ -12,7 +12,7 @@ from .. import URL_PREFIX_V1, auth, db, limiter
 from ..models import Book, book_schema, books_schema
 from ..utils import RATELIMIT_NORMAL, paginate
 
-book_bp = Blueprint(name='book', import_name=__name__, url_prefix=URL_PREFIX_V1)
+book_bp = Blueprint(import_name=__name__, url_prefix=URL_PREFIX_V1)
 # Rate-limit all the routes registered on this blueprint.
 limiter.limit(RATELIMIT_NORMAL)(book_bp)
 
@@ -29,7 +29,7 @@ def before_request() -> None:
     pass
 
 
-@book_bp.route('/books')
+@book_bp.route('/books', endpoint='books')
 @paginate(books_schema)
 def get_books() -> BaseQuery:
     """
@@ -40,7 +40,7 @@ def get_books() -> BaseQuery:
     return Book.query
 
 
-@book_bp.route('/books', methods=['POST'])
+@book_bp.route('/books', endpoint='add_book', methods=['POST'])
 def add_book():
     """
     Adds a new book.
@@ -60,7 +60,7 @@ def add_book():
     }
 
 
-@book_bp.route('/books/<int:id>')
+@book_bp.route('/books/<int:id>', endpoint='book')
 def get_book_by_id(id: int):
     """
     Returns the book with the given ID.
@@ -74,7 +74,7 @@ def get_book_by_id(id: int):
     }
 
 
-@book_bp.route('/books/<int:id>', methods=['PUT'])
+@book_bp.route('/books/<int:id>', endpoint='update_book', methods=['PUT'])
 def update_book(id: int):
     """
     Updates the book with the given ID.
@@ -103,7 +103,7 @@ def update_book(id: int):
     }
 
 
-@book_bp.route('/books/<int:id>', methods=['DELETE'])
+@book_bp.route('/books/<int:id>', endpoint='delete_book', methods=['DELETE'])
 def delete_book(id: int):
     """
     Deletes the book with the given ID.

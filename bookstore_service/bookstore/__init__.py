@@ -1,4 +1,4 @@
-from flask import Flask, g
+from flask import Blueprint, Flask, g
 from flask_bcrypt import Bcrypt
 from flask_httpauth import HTTPBasicAuth
 from flask_limiter import Limiter
