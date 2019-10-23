@@ -74,9 +74,16 @@ DELETE /blog/articles/1  # Correct
 
 ***
 
-**"无状态原则"**
+### "无状态原则"
 
-*由于client-side可能需要与不止一个server进行交互: 如果在server-side保存了有关client-side的任何状态, 那么当client-side与不同server进行交互的时候 就需要在这些servers之间进行关于client-side的状态信息的同步, 大大地增加了系统的复杂度.*
+***
+
+*由于client-side可能需要与不止一个server进行交互: 如果在server-side保存了有关client-side的任何状态, 那么在一个scale的系统的cluster中, 当client-side与不同server进行交互的时候 就需要在这些servers之间进行关于client-side的状态信息的同步, 大大地增加了系统的复杂度:*
+
+* *如果该状态同步是synchronous的, 那么同时刷新那么多个server上的用户状态将导致对用户request的处理变得异常缓慢*
+* *如果该状态同步是ascynchronous的, 那么用户在发送下一个请求时, 其他server将可能由于用户状态的不同步的原因无法正确地处理用户的request*
+
+***
 
 <u>=> 一个request中必须包含server (service)处理该request的全部信息 (其中包括标识该client-side的token), 而在server-side不应保存任何与client-side有关的信息, 即server-side不应保存任何与某个client-side关联的session.</u>
 
@@ -119,11 +126,11 @@ API传递的只是resource的"表示", 而不是resource本身, 而<u>`JSON`为�
 
 In this project, we implemented a <u>"bookstore" web service in RESTful-architecture, which has `author`s and `book`s associated with them as the two resources</u>, based on a simple `Flask` application.
 
-* Base URL: `/bookstore/v1`
+* Base URL: `/bookstore`
 
-  *Note that `/bookstore` is the application URL prefix, which is set up using `app.config['APPLICATION_ROOT']` plus proper WSGI setting, while`/v1` is hard-coded for versioning the API.*
+  *Note that `/bookstore` is the application URL prefix, which is set up using `app.config['APPLICATION_ROOT']`*
 
-* API Entrance: `/bookstore/v1/`
+* API Entrance: `/bookstore/`
 
   This returns some URLs that you can request to operate on the resources.
 

@@ -8,11 +8,11 @@ from flask import Blueprint, g, request
 from flask_limiter.util import get_remote_address
 from marshmallow import ValidationError
 
-from .. import URL_PREFIX_V1, auth, bcrypt, db, limiter
+from .. import auth, bcrypt, db, limiter
 from ..models import User, user_schema
 from ..utils import RATELIMIT_NORMAL, RATELIMIT_SLOW
 
-auth_bp = Blueprint(name='auth', import_name=__name__, url_prefix=URL_PREFIX_V1)
+auth_bp = Blueprint(name='auth', import_name=__name__)
 
 
 @auth_bp.route('/users', methods=['POST'])

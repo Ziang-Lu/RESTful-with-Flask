@@ -9,10 +9,10 @@ from typing import List
 from flask import Blueprint, url_for
 from flask_limiter.util import get_remote_address
 
-from . import URL_PREFIX_V1, limiter
+from . import limiter
 from .utils import RATELIMIT_DEFAULT
 
-entrance_bp = Blueprint(name='entrance', import_name=__name__, url_prefix=URL_PREFIX_V1)
+entrance_bp = Blueprint(name='entrance', import_name=__name__)
 
 
 @entrance_bp.route('/')
