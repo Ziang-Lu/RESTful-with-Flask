@@ -13,6 +13,7 @@ services:
 
   flask:
     depends_on:
+      - auth_service
       - db
       - rate-limiting
     build: ./bookstore_service
@@ -23,6 +24,14 @@ services:
       - 8000
       # Note that this port is only exposed to other services in the same
       # network, but not to outside world
+    restart: always
+
+  auth_service:
+    depends_on:
+      - db
+    build: ./auth_service
+    expose:
+      - 8000
     restart: always
 
   db:  # Note that this is also the hostname of the "db" service container

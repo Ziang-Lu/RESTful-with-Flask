@@ -5,17 +5,13 @@ Utility functions.
 """
 
 import functools
-from typing import Callable, Optional
+import requests
+from typing import Callable
 
-from flask import current_app, g, request, url_for
+from flask import g, request, url_for
 from flask_marshmallow import Schema
-from itsdangerous import (
-    BadSignature, SignatureExpired,
-    TimedJSONWebSignatureSerializer as Serializer
-)
 
-from . import auth, bcrypt
-from .models import User
+from . import auth
 
 
 @auth.verify_password
@@ -28,34 +24,17 @@ def verify_password_or_token(username_or_token: str, password: str) -> bool:
     :param password: str
     :return: bool
     """
-    # Verify as if username_or_token is a token
-    user = _verify_token(username_or_token)
-    if user:
-        g.user = user
-        return True
-
-    # Verify the username and password combination
-    user = User.query.filter_by(username=username_or_token).first()
-    if user and bcrypt.check_password_hash(user.password, password):
-        g.user = user
-        return True
-    return False
-
-
-def _verify_token(token: str) -> Optional[User]:
-    """
-    Helper function to verify the given token.
-    :param token: str
-    :return: User or None
-    """
-    serializer = Serializer(secret_key=current_app['SECRET_KEY'])
-    try:
-        data = serializer.loads(token)
-    except SignatureExpired:  # Valid token, but expired
-        return None
-    except BadSignature:  # Invalid token
-        return None
-    return User.query.get(data['id'])
+    r = requests.get(
+        'http://auth_service:8000/user-auth',
+        json={
+            'username_or_token': username_or_token,
+            'password': password
+        }
+    )
+    if r.status_code == 400:
+        return False
+    g.username = r.json()['username']
+    return True
 
 
 def paginate(collection_schema: Schema, max_per_page: int=10) -> Callable:

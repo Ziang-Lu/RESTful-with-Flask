@@ -4,13 +4,14 @@
 Authentication-related RESTful API module.
 """
 
+import requests
 from flask import g, request
 from flask_limiter.util import get_remote_address
 from flask_restful import Resource
 from marshmallow import ValidationError
 
-from .. import auth, bcrypt, db, limiter
-from ..models import User, user_schema
+from .. import auth, limiter
+from ..models import user_schema
 from ..utils import RATELIMIT_NORMAL, RATELIMIT_SLOW
 
 
@@ -36,23 +37,13 @@ class UserItem(Resource):
                 'message': e.messages
             }, 400
 
-        if User.query.filter_by(username=user_data['username']).first():
-            return {
-                'status': 'error',
-                'message': 'User already exist'
-            }, 400
-
-        username, password = user_data['username'], user_data['password']
-        new_user = User(
-            username=username,
-            password=bcrypt.generate_password_hash(password).decode('utf-8')
-        )
-        db.session.add(new_user)
-        db.session.commit()
-        return {
-            'status': 'success',
-            'data': user_schema.dump(new_user)
-        }, 201
+        r = requests.post('http://auth_service:8000/users', json=user_data)
+        if r.status_code == 400:
+            return r.json(), r.status_code
+        json_data = r.json()
+        new_user_data = json_data['data']
+        json_data['data'] = user_schema.dump(new_user_data)
+        return json_data, r.status_code
 
 
 class Token(Resource):
@@ -69,9 +60,8 @@ class Token(Resource):
         Gets a token for the current logged-in user.
         :return:
         """
-        # After loggin in, we can access the user with "g.user"
-        token, duration = g.user.generate_token()
-        return {
-            'token': token.decode('ascii'),
-            'duration in seconds': duration
-        }
+        # After logging-in, we can access the username with "g.username"
+        r = requests.get(
+            'http://auth_service:8000/token', json={'username': g.username}
+        )
+        return r.json(), r.status_code

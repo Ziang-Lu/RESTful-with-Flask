@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """
-API defintion module.
+API definition module.
 """
 
 from flask import Blueprint
