@@ -193,24 +193,26 @@ For this web service that we wrote, it is <u>open to anyone</u>, which is <u>ver
 
 However, the <u>"stateless principle" of RESTful architecture requires that the clients needs to provide credentials in every request they send</u>.
 
-According to the author of `flask-httpauth` in his article https://blog.miguelgrinberg.com/post/restful-authentication-with-flask, there are two ways to do the authentication:
+According to the author of `Flask-HTTPAuth` in his article https://blog.miguelgrinberg.com/post/restful-authentication-with-flask
 
 * Maintain a `users` table of registered users
 
   * For this, we defined `User` data model and `UserSchema` for serialization/deserialization.
     * POST `/users` with `username:password` authentication credentials creates a new user
 
-* The client needs to provide credentials in every request they send.
+* The client needs to provide credentials in every request they send. There are two ways to do the authentication:
 
-  1. Provide username-password combination in every request
+  1. Provide `username:password` combination in every request
 
-  2. Send username-password to the server, and get back a token.
+  2. Send `username:password` to the server, and get back a token.
 
      * GET `/token` with `username:password` or `token:<any-password>` authentication credentials to get a token for that user
 
      This token is only valid for some time, i.e., has an expiration time. During this period of time, the user can simply provide this token as the credential.
      
      In this way, the authentication mechanism becomes much simpler, and even safer since the token is only valid for some time.
+
+Thus, we separate `auth_service` out from `bookstore_service` as a separate web service, which is responsible for user authentication, including user registration, token generation, and user authentication, etc.
 
 
 
@@ -237,6 +239,12 @@ Check out https://github.com/Ziang-Lu/Flask-Blog/blob/master/Deployment%20Option
 For a modern web application described at the very beginning, it can be deployed in `Docker` containers as such:
 
 <img src="https://github.com/Ziang-Lu/RESTful-with-Flask/blob/master/Dockerized%20Web%20Services.png?raw=true">
+
+***
+
+For this entire web service, this is the illustrative architecture:
+
+<img src="https://github.com/Ziang-Lu/RESTful-with-Flask/blob/master/Bookstore%20Web%20Service%20RESTful%20Architecture%20&%20API.png?raw=true">
 
 ***
 
