@@ -180,8 +180,8 @@ In this project, we implemented a <u>"bookstore" web service in RESTful-architec
 
        *(In my implementation, I simply used `Flask-RESTful`. For the usage of `Flask-RESTPlus` and `Swagger` UI, check out their documentation: https://flask-restplus.readthedocs.io/en/stable/)*
 
-* But either way can use `Marshmallow`/`Flask_Marshmallow` for schema definition & deserialization (including validation) / serialization.
-* This web service is backed by `PostgreSQL` database.
+* But either way can use `Marshmallow`/`Flask-Marshmallow` for schema definition & deserialization (including validation) / serialization.
+* This web service is backed by `PostgreSQL` database. And thus `Flask-SQLAlchemy` module is used for ORM-related tasks.
 
 
 
