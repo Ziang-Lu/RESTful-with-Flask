@@ -16,7 +16,7 @@ metadata:
   name: exampleservice
 spec:
   selector:
-    app: myapp
+    app: myapp  # This should match the below "***".
   ports:
     - protocol: "TCP"
       # Port accessible inside cluster
@@ -42,11 +42,27 @@ spec:
         app: myapp
     spec:
       containers:
-        - name: myapp
+        - name: myapp  # ***
           image: jamesquigley/exampleapp:v1.0.0
           ports:
             - containerPort: 8080
 ```
 
+<br>
+
 For a written tutorial, check out https://auth0.com/blog/kubernetes-tutorial-step-by-step-introduction-to-basic-concepts/
+
+***
+
+Command-line tool to manage Kubernetes: `kubectl`
+
+Kubernetes cloud providers:
+
+* <u>Minikube</u>
+* <u>Google Kubernetes Engine (GKE)</u>
+* Amazon Elastic Kubernetes Service (EKC)
+* Azure Kubernetes Service (AKS)
+* OpenShift Kubernetes
+
+***
 
