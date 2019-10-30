@@ -1,24 +1,25 @@
 [[source]]
 name = "pypi"
-url = "https://pypi.org/simple"
+url = "https://pypi.tuna.tsinghua.edu.cn/simple/"
 verify_ssl = true
 
 [dev-packages]
 
 [packages]
-flask-restful = "*"
-flask-sqlalchemy = "*"
-sqlalchemy = "*"
-marshmallow = "*"
-marshmallow-sqlalchemy = "*"
-flask-marshmallow = "*"
+flask = "*"
 flask-bcrypt = "*"
 flask-httpauth = "*"
-gunicorn = "*"
-psycopg2-binary = "*"
 flask-limiter = "*"
+flask-marshmallow = "*"
+flask-restful = "*"
+flask-sqlalchemy = "*"
+gunicorn = "*"
+marshmallow = "*"
+marshmallow-sqlalchemy = "*"
+psycopg2-binary = "*"
 redis = "*"
 requests = "*"
+sqlalchemy = "*"
 
 [requires]
 python_version = "3.7"

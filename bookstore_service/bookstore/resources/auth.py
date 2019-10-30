@@ -8,10 +8,8 @@ import requests
 from flask import g, request
 from flask_limiter.util import get_remote_address
 from flask_restful import Resource
-from marshmallow import ValidationError
 
 from .. import auth, limiter
-from ..models import user_schema
 from ..utils import RATELIMIT_NORMAL, RATELIMIT_SLOW
 
 
@@ -30,20 +28,10 @@ class UserItem(Resource):
         Adds a new user.
         :return:
         """
-        try:
-            user_data = user_schema.load(request.get_json())
-        except ValidationError as e:
-            return {
-                'message': e.messages
-            }, 400
-
-        r = requests.post('http://auth_service:8000/users', json=user_data)
-        if r.status_code == 400:
-            return r.json(), r.status_code
-        json_data = r.json()
-        new_user_data = json_data['data']
-        json_data['data'] = user_schema.dump(new_user_data)
-        return json_data, r.status_code
+        r = requests.post(
+            'http://auth_service:8000/users', json=request.get_json()
+        )
+        return r.json(), r.status_code
 
 
 class Token(Resource):

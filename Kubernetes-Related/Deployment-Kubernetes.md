@@ -60,13 +60,11 @@ Command-line tool to manage Kubernetes: `kubectl`
 
 Kubernetes cloud providers:
 
-* <u>Minikube</u>
-* <u>Google Kubernetes Engine (GKE)</u>
+* **Minikube** (Commonly used)
+* **Google Kubernetes Engine (GKE)** (Commonly used)
 * Amazon Elastic Kubernetes Service (EKC)
 * Azure Kubernetes Service (AKS)
 * OpenShift Kubernetes
-
-*<u>Commonly used</u>*
 
 ***
 

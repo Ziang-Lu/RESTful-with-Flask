@@ -40,7 +40,7 @@ def create_app(config_class=Config) -> Flask:
     db.init_app(app)
     ma.init_app(app)  # Order matters: Initialize SQLAlchemy before Marshmallow
     # Since we'll place this web service behind a proxy server (Nginx), in order
-    # for rate-liminting to get the correct remote address from
+    # for rate-limiting to get the correct remote address from
     # "X-Forwarded-For" header, we need to do some extra setup here.
     app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1)
     limiter.init_app(app)

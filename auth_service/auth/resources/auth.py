@@ -6,9 +6,10 @@ from itsdangerous import (
     BadSignature, SignatureExpired,
     TimedJSONWebSignatureSerializer as Serializer
 )
+from marshmallow import ValidationError
 
 from .. import bcrypt, db
-from ..models import User
+from ..models import User, user_schema
 
 
 class UserItem(Resource):
@@ -21,7 +22,12 @@ class UserItem(Resource):
         Adds a new user.
         :return:
         """
-        user_data = request.json
+        try:
+            user_data = user_schema.load(request.json)
+        except ValidationError as e:
+            return {
+                'message': e.messages
+            }, 400
 
         if User.query.filter_by(username=user_data['username']).first():
             return {
@@ -38,10 +44,7 @@ class UserItem(Resource):
         db.session.commit()
         return {
             'status': 'success',
-            'data': {
-                'id': new_user.id,
-                'username': username
-            }
+            'data': user_schema.dump(new_user)
         }, 201
 
 
@@ -50,7 +53,27 @@ class UserAuth(Resource):
     Resource for user authentication.
     """
 
+    @classmethod
+    def _verify_token(cls, token: str) -> Optional[User]:
+        """
+        Private static helper method to verify the given token.
+        :param token: str
+        :return: User or None
+        """
+        serializer = Serializer(secret_key=current_app['SECRET_KEY'])
+        try:
+            data = serializer.loads(token)
+        except SignatureExpired:  # Valid token, but expired
+            return None
+        except BadSignature:  # Invalid token
+            return None
+        return User.query.get(data['id'])
+
     def get(self):
+        """
+        Handles user authentication.
+        :return:
+        """
         verification_data = request.json
         username_or_token = verification_data['username_or_token']
         password = verification_data['password']
@@ -71,26 +94,11 @@ class UserAuth(Resource):
             return {
                 'status': 'error',
                 'message': 'Authentication failed'
-            }, 400
+            }, 401
 
         return {
             'username': username
-        }, 200
-
-    def _verify_token(self, token: str) -> Optional[User]:
-        """
-        Private helper method to verify the given token.
-        :param token: str
-        :return: User or None
-        """
-        serializer = Serializer(secret_key=current_app['SECRET_KEY'])
-        try:
-            data = serializer.loads(token)
-        except SignatureExpired:  # Valid token, but expired
-            return None
-        except BadSignature:  # Invalid token
-            return None
-        return User.query.get(data['id'])
+        }
 
 
 class Token(Resource):

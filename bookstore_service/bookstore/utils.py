@@ -31,7 +31,7 @@ def verify_password_or_token(username_or_token: str, password: str) -> bool:
             'password': password
         }
     )
-    if r.status_code == 400:
+    if r.status_code == 401:
         return False
     g.username = r.json()['username']
     return True

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Flask models module.
+Bookstore-related models module.
 """
 
 from datetime import datetime
@@ -44,7 +44,8 @@ class Book(db.Model):
         db.Integer, db.ForeignKey('authors.id', ondelete='CASCADE'),
         nullable=False
     )
-    author = db.relationship(Author, backref=db.backref('books', lazy=True))  # Define the lazy status for the backref
+    # Define the lazy status for the backref
+    author = db.relationship(Author, backref=db.backref('books', lazy=True))
     description = db.Column(db.Text)
     date_published = db.Column(db.Date, nullable=False, default=datetime.today)
 
@@ -146,24 +147,3 @@ class BookSchema(ma.Schema):
 
 book_schema = BookSchema()
 books_schema = BookSchema(many=True, only=('title', 'author', 'url_self'))
-
-
-class UserSchema(ma.Schema):
-    """
-    User schema.
-    """
-
-    id = fields.Integer(dump_only=True)
-    username = fields.Str(
-        required=True,
-        validate=validate.Length(min=1, max=120)
-    )
-    password = fields.Str(
-        required=True, validate=validate.Length(min=8, max=60), load_only=True
-    )
-
-    class Meta:
-        unknown = EXCLUDE
-
-
-user_schema = UserSchema()

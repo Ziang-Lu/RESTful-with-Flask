@@ -1,10 +1,12 @@
 from flask import Flask
 from flask_bcrypt import Bcrypt
+from flask_marshmallow import Marshmallow
 from flask_sqlalchemy import SQLAlchemy
 
 from .config import Config
 
 db = SQLAlchemy()
+ma = Marshmallow()
 bcrypt = Bcrypt()
 
 
@@ -18,6 +20,7 @@ def create_app(config=Config) -> Flask:
     app.config.from_object(config)
 
     db.init_app(app)
+    ma.init_app(app)  # Order matters: Initialize SQLAlchemy before Marshmallow
     bcrypt.init_app(app)
 
     # Implementation with extension:
