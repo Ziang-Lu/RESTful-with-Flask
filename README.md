@@ -214,6 +214,8 @@ According to the author of `Flask-HTTPAuth` in his article https://blog.miguelgr
 
 Thus, we separate `auth_service` out from `bookstore_service` as a separate web service, which is responsible for user authentication, including user registration, token generation, and user authentication, etc.
 
+And in `bookstore_service`, the corresponding authentication module handles only data deserialization and validation, communicates with `auth_service` and delegates the detailed logics to `auth_service`, get back data and do the final serialization, i.e., some pre-processing and post-processing stuff.
+
 
 
 ### Additional Features
