@@ -74,9 +74,9 @@ class UserAuth(Resource):
         Handles user authentication.
         :return:
         """
-        verification_data = request.json
-        username_or_token = verification_data['username_or_token']
-        password = verification_data['password']
+        auth_data = request.json
+        username_or_token = auth_data['username_or_token']
+        password = auth_data['password']
 
         # Verify as if username_or_token is a token
         user = self._verify_token(username_or_token)

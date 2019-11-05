@@ -28,6 +28,7 @@ class UserItem(Resource):
         Adds a new user.
         :return:
         """
+        # Note that "redirect()" cannot redirect "POST" requests
         r = requests.post(
             'http://auth_service:8000/users', json=request.get_json()
         )
@@ -48,6 +49,9 @@ class Token(Resource):
         Gets a token for the current logged-in user.
         :return:
         """
+        # Note that even though "redirect()" is able to redirect "GET" requests,
+        # it cannot carry data with the redirect
+
         # After logging-in, we can access the username with "g.username"
         r = requests.get(
             'http://auth_service:8000/token', json={'username': g.username}
