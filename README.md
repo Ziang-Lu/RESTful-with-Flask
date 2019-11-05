@@ -6,7 +6,17 @@
 
 In the past:
 
--> We have a full, heavy web application, which contains all the functionalities.
+We have a full, "monolithic", heavy web application, which contains all the functionalities.
+
+-> Scalability problem:
+
+<img src="https://github.com/Ziang-Lu/RESTful-with-Flask/blob/master/Monolithic%20Architecture%20Scalability.png?raw=true">
+
+以上图所展示的情况为例:
+
+在一个服务中, 某个component的负载已经达到了90%, 也就是到了不得不对服务能力进行扩容的时候了. 而该服务中的其他components的负载还没有到其处理能力的20%. 由于monolithic服务中的各个component是打包在一起的, 因此通过一个额外的服务实例虽然可以将需要扩容的component的负载降低到45%, 但是也使得其他各个component的利用率更为低下.
+
+-> 本质上, 这种不便都是由于monolithic服务中, 一个实例包含了该服务的所有功能所导致的.
 
 ***
 

@@ -1,6 +1,7 @@
 from flask import Flask, g
 from flask_httpauth import HTTPBasicAuth
 from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 from flask_marshmallow import Marshmallow
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.middleware.proxy_fix import ProxyFix
@@ -18,11 +19,11 @@ from .utils import RATELIMIT_DEFAULT
 def my_key_func() -> str:
     """
     Self-defined key function for rate limiting.
-    Since most of the time, rate limiting is done after authentication, we can
-    use "g.username" as the key.
     :return: str
     """
-    return g.username
+    if 'username' in g:
+        return g.username
+    return get_remote_address()
 
 
 limiter = Limiter(default_limits=[RATELIMIT_DEFAULT], key_func=my_key_func)
