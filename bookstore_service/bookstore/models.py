@@ -54,7 +54,6 @@ class Book(db.Model):
 
 
 ##### SCHEMAS #####
-# Note: Schemas are only used with naive RESTful API implementation.
 
 
 class AuthorSchema(ma.Schema):

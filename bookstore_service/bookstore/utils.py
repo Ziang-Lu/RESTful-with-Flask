@@ -51,7 +51,8 @@ def paginate(collection_schema: Schema, max_per_page: int=10) -> Callable:
         def wrapper(*args, **kwargs):
             page = request.args.get('page', type=int, default=1)
             per_page = min(
-                request.args.get('per_page', type=int, default=10), max_per_page
+                request.args.get('per_page', type=int,
+                                 default=10), max_per_page
             )
 
             query = f(*args, **kwargs)
@@ -63,7 +64,7 @@ def paginate(collection_schema: Schema, max_per_page: int=10) -> Callable:
                 'page': page,
                 'per_page': per_page,
                 'pages': p.pages,
-                'total': p.total,
+                'total': p.total
             }
             if p.has_prev:
                 pagination_meta['prev'] = url_for(
