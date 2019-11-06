@@ -1,3 +1,9 @@
+# -*- coding: utf-8 -*-
+
+"""
+Authentication-related RESTful API module.
+"""
+
 from typing import Optional
 
 from flask import current_app, request
@@ -12,9 +18,9 @@ from .. import bcrypt, db
 from ..models import User, user_schema
 
 
-class UserItem(Resource):
+class UserList(Resource):
     """
-    Resource for a single user.
+    Resource for a collections of users.
     """
 
     def post(self):
@@ -28,14 +34,15 @@ class UserItem(Resource):
             return {
                 'message': e.messages
             }, 400
+        username = user_data['username']
+        password = user_data['password']
 
-        if User.query.filter_by(username=user_data['username']).first():
+        if User.query.filter_by(username=username).first():
             return {
                 'status': 'error',
                 'message': 'User already exist'
             }, 400
 
-        username, password = user_data['username'], user_data['password']
         new_user = User(
             username=username,
             password=bcrypt.generate_password_hash(password).decode('utf-8')
