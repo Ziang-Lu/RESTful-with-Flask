@@ -36,7 +36,7 @@
     | `title`       | string | True       |
     | `description` | string | False      |
 
-
+<br>
 
 ### `Flask` Implementation Detail
 
@@ -91,6 +91,22 @@ According to the author of `Flask-HTTPAuth` in his article https://blog.miguelgr
 
 Thus, <u>we separate `auth_service` out from `bookstore_service` as a separate web service, which is responsible for user authentication, including user registration, token generation, and user authentication, etc</u>.
 
+***
+
+* *Why not separate `author_service` or `book_service` out?*
+
+  *This is because `Author` and `Book` has a tightly-coupled 1-to-many relationship, so separating them into different services leads to great inconvenience:*
+
+  -> *A `Book` object has an attribute of `author`, which refers to an `Author` object. Imagine we try to separate them out into different services, then in order to pass the representations of `Author` and `Book` objects, we have to repeatedly define `AuthorSchema` and `BookSchema` in both `author_service` and `book_service`, which is redundant and violates the DIY principle.*
+
+***
+
+For this entire web service, this is the illustrative architecture:
+
+<img src="https://github.com/Ziang-Lu/RESTful-with-Flask/blob/master/Bookstore%20Web%20Service%20RESTful%20Architecture%20&%20API.png?raw=true">
+
+***
+
 
 
 ### Additional Features
@@ -103,7 +119,7 @@ Thus, <u>we separate `auth_service` out from `bookstore_service` as a separate w
 
   All routes returning a collection of resources actually returns paginated results, with information about pagination metadata as well as the URLs for the previous page, next page, first page, last page, etc.
 
-
+<br>
 
 ### Deployment
 
@@ -119,9 +135,11 @@ For a modern web application described at the very beginning, it can be deployed
 
 ***
 
+Thus, this web service can be deployed as follows:
+
 For this entire web service, this is the illustrative architecture:
 
-<img src="https://github.com/Ziang-Lu/RESTful-with-Flask/blob/master/Bookstore%20Web%20Service%20RESTful%20Architecture%20&%20API.png?raw=true">
+<img src="https://github.com/Ziang-Lu/RESTful-with-Flask/blob/master/Bookstore%20Web%20Service%Deployment.png.png?raw=true">
 
 ***
 
