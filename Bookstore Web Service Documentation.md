@@ -89,7 +89,7 @@ According to the author of `Flask-HTTPAuth` in his article https://blog.miguelgr
 
      *In this mechanism described above, we can simply provide a valid token to get a new token, and so on, ...*
 
-Thus, <u>we separate `auth_service` out from `bookstore_service` as a separate web service, which is responsible for user authentication, including user registration, token generation, and user authentication, etc</u>.
+Thus, <u>we separate a Flask-based `auth_service` out from `bookstore_service` as a separate web service, which is responsible for user authentication, including user registration, token generation, and user authentication, etc</u>.
 
 ***
 
@@ -137,9 +137,7 @@ For a modern web application described at the very beginning, it can be deployed
 
 Thus, this web service can be deployed as follows:
 
-For this entire web service, this is the illustrative architecture:
-
-<img src="https://github.com/Ziang-Lu/RESTful-with-Flask/blob/master/Bookstore%20Web%20Service%Deployment.png.png?raw=true">
+<img src="https://github.com/Ziang-Lu/RESTful-with-Flask/blob/master/Bookstore%20Web%20Service%Deployment.png?raw=true">
 
 ***
 
