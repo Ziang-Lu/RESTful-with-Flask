@@ -38,7 +38,7 @@
 
 <br>
 
-### `Flask` Implementation Detail
+### `Flask` Implementation Details
 
 * Basically, there are two ways to implement this web service:
 
@@ -50,7 +50,7 @@
 
      * `Flask_RESTPlus` for defining resources
 
-       Basically, this is very similar to `Flask-RESTful`, since originaly this project was forked from `Flask-RESTful`. The biggest advantage over `Flask_RESTPlus` is the auto-generated documentation using `Swagger` UI.
+       Basically, this is very similar to `Flask-RESTful`, since originally this project was forked from `Flask-RESTful`. The biggest advantage over `Flask_RESTful` is the auto-generated documentation using `Swagger` UI.
 
        *(In my implementation, I simply used `Flask-RESTful`. For the usage of `Flask-RESTPlus` and `Swagger` UI, check out their documentation: https://flask-restplus.readthedocs.io/en/stable/)*
 
@@ -62,7 +62,7 @@
 
 ### Note on web service security
 
-For this web service that we wrote, it is <u>open to anyone</u>, which is <u>very unsafe</u>.
+A web service <u>open to anyone</u> is <u>very unsafe</u>.
 
 => Thus, we <u>need a authentication mechanism</u>, so that the web service is only open to those registered users.
 
@@ -72,14 +72,14 @@ According to the author of `Flask-HTTPAuth` in his article https://blog.miguelgr
 
 * Maintain a `users` table of registered users
 
-  * For this, we defined `User` data model and `UserSchema` for serialization/deserialization.
+  * For this, we define `User` data model and `UserSchema` for serialization/deserialization.
     * POST `/bookstore_service/users` with `username:password` authentication credentials creates a new user
 
 * The client needs to provide credentials in every request they send. There are two ways to do the authentication:
 
   1. Provide `username:password` combination in every request
 
-  2. Send `username:password` to the server, and get back a token.
+  2. Send `username:password` to the server, and get back a token
 
      * GET `/token` with `username:password` or `token:<any-password>` authentication credentials to get a token for that user
 
@@ -87,15 +87,17 @@ According to the author of `Flask-HTTPAuth` in his article https://blog.miguelgr
 
      *Tricky side effect:*
 
-     *In this mechanism described above, we can simply provide a valid token to get a new token, and so on, ...*
+     *In this mechanism described above, we can simply provide a valid token to get a new token, and so on, ... Any problem with this?*
 
 Thus, <u>we separate a Flask-based `auth_service` out from `bookstore_service` as a separate web service, which is responsible for user authentication, including user registration, token generation, and user authentication, etc</u>.
 
 ***
 
-* *Why not separate `author_service` or `book_service` out?*
+* *Why not go one step further, and separate `author_service` or `book_service` out?*
 
-  *This is because `Author` and `Book` has a tightly-coupled 1-to-many relationship, so separating them into different services leads to great inconvenience:*
+  *Well... we could've done that, but it requires a little bit more effort.*
+
+  *This is because`Author` and `Book` has a tightly-coupled 1-to-many relationship, so separating them into different services leads to great inconvenience:*
 
   -> *A `Book` object has an attribute of `author`, which refers to an `Author` object. Imagine we try to separate them out into different services, then in order to pass the representations of `Author` and `Book` objects, we have to repeatedly define `AuthorSchema` and `BookSchema` in both `author_service` and `book_service`, which is redundant and violates the DIY principle.*
 
@@ -137,7 +139,7 @@ For a modern web application described at the very beginning, it can be deployed
 
 Thus, this web service can be deployed as follows:
 
-<img src="https://github.com/Ziang-Lu/RESTful-with-Flask/blob/master/Bookstore%20Web%20Service%Deployment.png?raw=true">
+<img src="https://github.com/Ziang-Lu/RESTful-with-Flask/blob/master/Bookstore%20Web%20Service%20Deployment.png?raw=true">
 
 ***
 
