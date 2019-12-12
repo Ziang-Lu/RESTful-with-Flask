@@ -1,3 +1,5 @@
+This repo talks about modern microservice architecture, RESTful architecture & API design, including an example RESTful web service.
+
 # Demo RESTful Architecure & API Design (based on a Flask Application)
 
 ## Service-Oriented-Architecture (SOA) (面向服务架构) for Web Applications
@@ -14,7 +16,7 @@ We have a full, "monolithic", heavy web application, which contains all the func
 
 以上图所展示的情况为例:
 
-在一个服务中, 某个component的负载已经达到了90%, 也就是到了不得不对服务能力进行扩容的时候了. 而该服务中的其他components的负载还没有到其处理能力的20%. 由于monolithic服务中的各个component是打包在一起的, 因此通过一个额外的服务实例虽然可以将需要扩容的component的负载降低到45%, 但是也使得其他各个component的利用率更为低下.
+在一个服务中, 某个component的负载已经达到了90%, 也就是到了不得不对服务能力进行扩容的时候了. 而该服务中的其他components的负载还没有到其处理能力的20%. 由于monolithic服务中的各个component是打包在一起的, 因此通过一个额外的服务实例虽然可以将需要扩容的component的负载降低到45%, 但是也使得其他各个component的利用率更为低下, 造成了资源的浪费.
 
 -> 本质上, 这种不便都是由于monolithic服务中, 一个实例包含了该服务的所有功能所导致的.
 
@@ -28,11 +30,23 @@ e.g., A traditional e-commerce web application may be splitted into the followin
 
 <img src="https://github.com/Ziang-Lu/RESTful-with-Flask/blob/master/RESTful%20Architecture.png?raw=true">
 
+<br>
+
 ***
 
 ### "Microservice" Architecture
 
 <img src="https://github.com/Ziang-Lu/RESTful-with-Flask/blob/master/Microservice%20Architecture.png?raw=true">
+
+=> Microservice架构可以让我们:
+
+* 对负载高的service进行独立的扩容, 大大地提高了资源的利用率
+
+* (在一个monolithic application中, 如果某个功能出现了问题, 导致了系统崩溃, 这将导致整个系统崩溃, 导致这个系统的所有功能都不可用.)
+
+  而在一个microservice系统中, 如果某个功能出现了问题, 只会导致和该功能相关的内容无法访问, 而不会影响系统的其他功能.
+
+  => 提高系统的robustness和availability
 
 ***
 
@@ -45,6 +59,24 @@ RPC风格曾是Web Service的主流, 最初是基于XML-RPC协议, 后来渐渐�
 <u>但RPC风格的web service, 受开发web service所采用的语言的束缚比较大. e.g, 使用`.NET`框架开发的web service, 其客户端通常也需要用`C#`来实现; 而进入移动互联网时代后, RPC风格的web service很难在移动终端使用.</u>
 
 详见: https://blog.igevin.info/posts/restful-architecture-in-general/
+
+<br>
+
+**具体于Java: Remote-Method-Invokation (RMI) (远程方法调用)**
+
+具体解释和例子, 详见关于design pattern的Proxy Pattern:
+
+https://github.com/Ziang-Lu/Design-Patterns/blob/master/3-Structural%20Patterns/6-Proxy%20Pattern/Proxy%20Pattern.md
+
+*(其实也不是具体于Java, 因为在上面的repo中就有Python的例子, 因此本质上还是回归到了RPC.)*
+
+注意, 至少是在RMI中, 往往有一个`RMI Registry` service的模式:
+
+* Server-side的`RealSubject`需要在`RMI Registry`中register自己, 并指定一个`ObjectId`;
+* Client-side根据这个`ObjectId`查找对应的`RealSubject`, 并获得相应的`stub` (本质上是一个"proxy"), 并通过对`stub`进行方法调用来执行`RealSubject`中对应的方法调用.
+  * 对client-side来说, 仿佛就是在调用真正的`RealSubject`一样.
+
+***
 
 <br>
 

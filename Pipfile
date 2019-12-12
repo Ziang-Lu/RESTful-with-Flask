@@ -1,6 +1,6 @@
 [[source]]
 name = "pypi"
-url = "https://pypi.tuna.tsinghua.edu.cn/simple/"
+url = "https://pypi.tuna.tsinghua.edu.cn/simple"
 verify_ssl = true
 
 [dev-packages]
@@ -13,6 +13,7 @@ flask-limiter = "*"
 flask-marshmallow = "*"
 flask-restful = "*"
 flask-sqlalchemy = "*"
+gevent = "*"
 gunicorn = "*"
 marshmallow = "*"
 marshmallow-sqlalchemy = "*"
