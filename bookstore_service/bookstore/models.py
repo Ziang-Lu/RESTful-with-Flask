@@ -26,9 +26,6 @@ class Author(db.Model):
     name = db.Column(db.String(NAME_MAX_LEN), nullable=False, unique=True)
     email = db.Column(db.String(EMAIL_MAX_LEN))
 
-    def __repr__(self):
-        return f"Author('{self.name}')"
-
 
 class Book(db.Model):
     """
@@ -49,9 +46,6 @@ class Book(db.Model):
     description = db.Column(db.Text)
     date_published = db.Column(db.Date, nullable=False, default=datetime.today)
 
-    def __repr__(self):
-        return f"Book('{self.title}' by '{self.author.name}')"
-
 
 ##### SCHEMAS #####
 
@@ -62,8 +56,7 @@ class AuthorSchema(ma.Schema):
     For serialization, a Author object will be serialized to a JSON dictionary
     defined by this AuthorSchema.
     For deserialization, a JSON dictionary is validated, and then will be
-    deserialized to:
-    -> (by default) a dictionary defined by this AuthorSchema.
+    deserialized to a dictionary defined by this AuthorSchema.
     """
 
     # Mark this field to be "dump-only", so it can't be deserialized from a
@@ -81,8 +74,8 @@ class AuthorSchema(ma.Schema):
     )
 
     # FIXME: For naive implementation, fix the blueprint prefix of the endpoints
-    url_self = ma.URLFor('api.authors', id='<id>', _external=True)
-    url_collection = ma.URLFor('api.author', _external=True)
+    url_self = ma.URLFor('api.author', id='<id>', _external=True)
+    url_collection = ma.URLFor('api.authors', _external=True)
 
     class Meta:
         unknown = EXCLUDE  # When encountering a unknown fields, simply exclude it
@@ -124,8 +117,8 @@ class BookSchema(ma.Schema):
     date_published = fields.Date()
 
     # FIXME: For naive implementation, fix the blueprint prefix of the endpoints
-    url_self = ma.URLFor('api.books', id='<id>', _external=True)
-    url_collection = ma.URLFor('api.book', _external=True)
+    url_self = ma.URLFor('api.book', id='<id>', _external=True)
+    url_collection = ma.URLFor('api.books', _external=True)
 
     class Meta:
         unknown = EXCLUDE

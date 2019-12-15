@@ -4,7 +4,7 @@
 Authentication-related RESTful API module.
 """
 
-from typing import Optional
+from typing import Optional, Tuple
 
 from flask import current_app, request
 from flask_restful import Resource
@@ -60,8 +60,8 @@ class UserAuth(Resource):
     Resource for user authentication.
     """
 
-    @classmethod
-    def _verify_token(cls, token: str) -> Optional[User]:
+    @staticmethod
+    def _verify_token(token: str) -> Optional[User]:
         """
         Private static helper method to verify the given token.
         :param token: str
@@ -102,9 +102,9 @@ class UserAuth(Resource):
                 'status': 'error',
                 'message': 'Authentication failed'
             }, 401
-
         return {
-            'username': username
+            'status': 'success'
+            'data': username
         }
 
 
@@ -113,13 +113,27 @@ class Token(Resource):
     Resource for token.
     """
 
+    @staticmethod
+    def _gen_token(user_id: int, expiration: int=600) -> Tuple[str, int]:
+        """
+        Private static helper method to generate a user token with the given
+        expiration time.
+        :param user_id: int
+        :param expiration: int
+        :return:
+        """
+        serializer = Serializer(
+            secret_key=current_app['SECRET_KEY'], expires_in=expiration
+        )
+        return serializer.dumps({'id': user_id}), expiration
+
     def get(self):
         """
         Gets a token for the current logged-in user.
         :return:
         """
         user = User.query.filter_by(username=request.json['username']).first()
-        token, duration = user.generate_token()
+        token, duration = self._gen_token(user.id)
         return {
             'token': token.decode('ascii'),
             'duration in seconds': duration

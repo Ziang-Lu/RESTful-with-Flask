@@ -40,7 +40,7 @@ def home():
 def _make_entry(endpoint: str, methods: List[str],
                 require_login: bool=False) -> dict:
     """
-    Helper function to make a entry.
+    Private helper function to make a entry.
     :param endpoint: str
     :param methods: list[str]
     :param require_login: bool
