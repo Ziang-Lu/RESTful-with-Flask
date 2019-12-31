@@ -2,11 +2,7 @@ This repo talks about modern microservice architecture, RESTful architecture & A
 
 # Demo RESTful Architecure & API Design (based on a Flask Application)
 
-## Service-Oriented-Architecture (SOA) (面向服务架构) for Web Applications
-
-***
-
-In the past:
+## (In the Past) Monolithic Architecture
 
 We have a full, "monolithic", heavy web application, which contains all the functionalities.
 
@@ -20,7 +16,9 @@ We have a full, "monolithic", heavy web application, which contains all the func
 
 -> 本质上, 这种不便都是由于monolithic服务中, 一个实例包含了该服务的所有功能所导致的.
 
-***
+<br>
+
+## Service-Oriented-Architecture (SOA) (面向服务架构) for Web Applications
 
 Now, we can <u>split these functionalities to "services".</u> <u>Each "service" corresponds to a "resource" and implements a single functionality, and should be associated with a URI</u>.
 
@@ -28,27 +26,7 @@ In this way, we can have a <u>lightweight web application (maybe even only the f
 
 e.g., A traditional e-commerce web application may be splitted into the following services/resources:
 
-<img src="https://github.com/Ziang-Lu/RESTful-with-Flask/blob/master/RESTful%20Architecture.png?raw=true">
-
-<br>
-
-***
-
-### "Microservice" Architecture
-
-<img src="https://github.com/Ziang-Lu/RESTful-with-Flask/blob/master/Microservice%20Architecture.png?raw=true">
-
-=> Microservice架构可以让我们:
-
-* 对负载高的service进行独立的扩容, 大大地提高了资源的利用率
-
-* (在一个monolithic application中, 如果某个功能出现了问题, 导致了系统崩溃, 这将导致整个系统崩溃, 导致这个系统的所有功能都不可用.)
-
-  而在一个microservice系统中, 如果某个功能出现了问题, 只会导致和该功能相关的内容无法访问, 而不会影响系统的其他功能.
-
-  => 提高系统的robustness和availability
-
-***
+<img src="https://github.com/Ziang-Lu/RESTful-with-Flask/blob/master/SOA%20Architecture.png?raw=true">
 
 <br>
 
@@ -60,7 +38,7 @@ RPC风格曾是Web Service的主流, 最初是基于XML-RPC协议, 后来渐渐�
 
 详见: https://blog.igevin.info/posts/restful-architecture-in-general/
 
-<br>
+***
 
 **具体于Java: Remote-Method-Invokation (RMI) (远程方法调用)**
 
@@ -75,6 +53,24 @@ https://github.com/Ziang-Lu/Design-Patterns/blob/master/3-Structural%20Patterns/
 * Server-side的`RealSubject`需要在`RMI Registry`中register自己, 并指定一个`ObjectId`;
 * Client-side根据这个`ObjectId`查找对应的`RealSubject`, 并获得相应的`stub` (本质上是一个"proxy"), 并通过对`stub`进行方法调用来执行`RealSubject`中对应的方法调用.
   * 对client-side来说, 仿佛就是在调用真正的`RealSubject`一样.
+
+***
+
+<br>
+
+## => "Microservice" Architecture
+
+<img src="https://github.com/Ziang-Lu/RESTful-with-Flask/blob/master/Microservice%20Architecture.png?raw=true">
+
+=> Microservice架构可以让我们:
+
+* 对负载高的service进行独立的扩容, 大大地提高了资源的利用率
+
+* (在一个monolithic application中, 如果某个功能出现了问题, 导致了系统崩溃, 这将导致整个系统崩溃, 导致这个系统的所有功能都不可用.)
+
+  而在一个microservice系统中, 如果某个功能出现了问题, 只会导致和该功能相关的内容无法访问, 而不会影响系统的其他功能.
+
+  => 提高系统的robustness和availability
 
 ***
 
