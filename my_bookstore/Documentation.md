@@ -105,7 +105,7 @@ Thus, <u>we separate a Flask-based `auth_service` out from `bookstore_service` a
 
 For this entire web service, this is the illustrative architecture:
 
-<img src="https://github.com/Ziang-Lu/RESTful-with-Flask/blob/master/Bookstore%20Web%20Service%20RESTful%20Architecture%20&%20API.png?raw=true">
+<img src="https://github.com/Ziang-Lu/RESTful-with-Flask/blob/master/my_bookstore/Bookstore%20Web%20Service%20RESTful%20Architecture%20&%20API.png?raw=true">
 
 ***
 
@@ -131,15 +131,9 @@ Check out https://github.com/Ziang-Lu/Flask-Blog/blob/master/Deployment%20Option
 
 ***
 
-For a modern web application described at the very beginning, it can be deployed in `Docker` containers as such:
-
-<img src="https://github.com/Ziang-Lu/RESTful-with-Flask/blob/master/Dockerized%20Web%20Services.png?raw=true">
-
-***
-
 Thus, this web service can be deployed as follows:
 
-<img src="https://github.com/Ziang-Lu/RESTful-with-Flask/blob/master/Bookstore%20Web%20Service%20Deployment.png?raw=true">
+<img src="https://github.com/Ziang-Lu/RESTful-with-Flask/blob/master/my_bookstore/Bookstore%20Web%20Service%20Deployment.png?raw=true">
 
 ***
 
