@@ -8,7 +8,7 @@ We have a full, "monolithic", heavy web application, which contains all the func
 
 -> Scalability problem:
 
-<img src="https://github.com/Ziang-Lu/RESTful-with-Flask/blob/master/Monolithic%20Architecture%20Scalability.png?raw=true">
+<img src="https://github.com/Ziang-Lu/RESTful-with-Flask/blob/master/Architecture-Monolithic%20Scalability.png?raw=true">
 
 以上图所展示的情况为例:
 
@@ -26,7 +26,7 @@ In this way, we can have a <u>lightweight web application (maybe even only the f
 
 e.g., A traditional e-commerce web application may be splitted into the following services/resources:
 
-<img src="https://github.com/Ziang-Lu/RESTful-with-Flask/blob/master/SOA%20Architecture.png?raw=true">
+<img src="https://github.com/Ziang-Lu/RESTful-with-Flask/blob/master/Architecture-SOA.png?raw=true">
 
 <br>
 
@@ -60,7 +60,7 @@ https://github.com/Ziang-Lu/Design-Patterns/blob/master/3-Structural%20Patterns/
 
 ## => "Microservice" Architecture
 
-<img src="https://github.com/Ziang-Lu/RESTful-with-Flask/blob/master/Microservice%20Architecture.png?raw=true">
+<img src="https://github.com/Ziang-Lu/RESTful-with-Flask/blob/master/Architecture-Microservice.png?raw=true">
 
 => Microservice架构可以让我们:
 
