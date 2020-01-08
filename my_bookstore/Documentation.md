@@ -21,7 +21,7 @@
 
   * `AuthorItem`
 
-    Route: `bookstore/authors/<id>`
+    Route: `bookstore/authors/<int:id>`
   
     | Method | Description                              | Request Form Schema                                     | Reponse Status Code                                          |
     | ------ | ---------------------------------------- | ------------------------------------------------------- | ------------------------------------------------------------ |
@@ -37,8 +37,6 @@
     | ------------- | ------ | --------- |
     | `title`       | string | True      |
     | `description` | string | False     |
-    
-    
 
 <br>
 
