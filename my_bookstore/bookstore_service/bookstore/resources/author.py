@@ -31,7 +31,7 @@ class AuthorList(Resource):
     @paginate(authors_schema)
     def get(self) -> BaseQuery:
         """
-        Returns all the authors.
+        Returns all the authors in the specified page.
         :return: BaseQuery
         """
         # For pagination, we need to return a query that hasn't run yet.

@@ -1,9 +1,9 @@
 #!/bin/bash
 
-docker build -f Dockerfile_base . -t restful-with-flask_base
-docker tag restful-with-flask_base ziangl/restful-with-flask_base
+docker build -f Dockerfile_base . -t my_bookstore_base
+docker tag my_bookstore_base ziangl/my_bookstore_base
 docker-compose build
-docker tag restful-with-flask_nginx ziangl/restful-with-flask_nginx
-docker tag restful-with-flask_auth_service ziangl/restful-with-flask_auth_service
-docker tag restful-with-flask_flask ziangl/restful-with-flask_flask
+docker tag my_bookstore_nginx ziangl/my_bookstore_nginx
+docker tag my_bookstore_auth_service ziangl/my_bookstore_auth_service
+docker tag my_bookstore_flask ziangl/my_bookstore_flask
 docker rmi $(docker images -f "dangling=true" -q)

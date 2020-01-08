@@ -1,4 +1,4 @@
-FROM ziangl/restful-with-flask_base
+FROM ziangl/my_bookstore_base
 
 # Copy the current directory to "/bookstore_service/" directory in the container
 COPY . /bookstore_service

@@ -73,7 +73,7 @@ class AuthorSchema(ma.Schema):
         'BookSchema', many=True, only=('title', 'url_self'), dump_only=True
     )
 
-    # FIXME: For naive implementation, fix the blueprint prefix of the endpoints
+    # Note: For naive implementation, fix the blueprint prefix of the endpoints
     url_self = ma.URLFor('api.author', id='<id>', _external=True)
     url_collection = ma.URLFor('api.authors', _external=True)
 
@@ -116,7 +116,7 @@ class BookSchema(ma.Schema):
     description = fields.Str()
     date_published = fields.Date()
 
-    # FIXME: For naive implementation, fix the blueprint prefix of the endpoints
+    # Note: For naive implementation, fix the blueprint prefix of the endpoints
     url_self = ma.URLFor('api.book', id='<id>', _external=True)
     url_collection = ma.URLFor('api.books', _external=True)
 

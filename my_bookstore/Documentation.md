@@ -4,37 +4,41 @@
 
   *Note that `/bookstore` is the application URL prefix, which is set up using `app.config['APPLICATION_ROOT']`*
 
-* API Entrance: `/bookstore/`
+* **API Entrance**: `/bookstore/` or `/bookstore/entrance`
 
   This returns some URLs that you can request to operate on the resources.
 
-* Resources:
+* **Defined Resources**:
 
-  * `Author`
+  * `AuthorList`
 
-    Route: `/authors`
+    Route: `bookstore/authors`
 
-    | Method | Description              | Request Data Schema                          | Response Status Code                            |
-    | ------ | ------------------------ | -------------------------------------------- | ----------------------------------------------- |
-    | GET    | Returns all the products |                                              | 200 on success                                  |
-    | POST   | Creates a new product    | `name`: string<br>`email`: string [optional] | 201 on success, 400 on not enough data provided |
+    | Method | Description             | Request Form Schema                          | Response Status Code                         |
+    | ------ | ----------------------- | -------------------------------------------- | -------------------------------------------- |
+    | GET    | Returns all the authors |                                              | 200 on success                               |
+    | POST   | Creates a new author    | `name`: string<br>`email`: string [optional] | 201 on success, 400 on invalid data provided |
 
-    Route: `/authors/<id>`
+  * `AuthorItem`
 
-    | Method | Description                              | Request Data Schema                                     | Reponse Status Code                                          |
+    Route: `bookstore/authors/<id>`
+  
+    | Method | Description                              | Request Form Schema                                     | Reponse Status Code                                          |
     | ------ | ---------------------------------------- | ------------------------------------------------------- | ------------------------------------------------------------ |
-    | GET    | Returns the author with the specified ID |                                                         | 200 on success, 404 on product not found                     |
-    | PUT    | Updates the author with the specified ID | `name`: string [optional]<br>`email`: string [optional] | 200 on success, 400 on invalid data provided, 404 on product not found |
-    | DELETE | Deletes the author with the specified ID |                                                         | 204 on success, 404 on product not found                     |
-
-  * `Book`
+    | GET    | Returns the author with the specified ID |                                                         | 200 on success, 404 on author not found                      |
+  | PUT    | Updates the author with the specified ID | `name`: string [optional]<br>`email`: string [optional] | 200 on success, 404 on author not found, 400 on invalid data provided |
+  | DELETE | Deletes the author with the specified ID |                                                         | 204 on success, 404 on author not found                      |
+  
+  * `BookList` & `BookItem`
 
     Similar to `Author`, but with request data schema as follows:
-
-    | Field name    | Type   | Required ? |
-    | ------------- | ------ | ---------- |
-    | `title`       | string | True       |
-    | `description` | string | False      |
+  
+    | Field name    | Type   | Required? |
+    | ------------- | ------ | --------- |
+    | `title`       | string | True      |
+    | `description` | string | False     |
+    
+    
 
 <br>
 
@@ -73,7 +77,7 @@ According to the author of `Flask-HTTPAuth` in his article https://blog.miguelgr
 * Maintain a `users` table of registered users
 
   * For this, we define `User` data model and `UserSchema` for serialization/deserialization.
-    * POST `/bookstore_service/users` with `username:password` authentication credentials creates a new user
+    * POST `/bookstore/users` with `username:password` authentication credentials creates a new user
 
 * The client needs to provide credentials in every request they send. There are two ways to do the authentication:
 
@@ -81,7 +85,7 @@ According to the author of `Flask-HTTPAuth` in his article https://blog.miguelgr
 
   2. Send `username:password` to the server, and get back a token
 
-     * GET `/token` with `username:password` or `token:<any-password>` authentication credentials to get a token for that user
+     * GET `/bookstore/token` with `username:password` or `token:<any-password>` authentication credentials to get a token for that user
 
      This token is only valid for some time, i.e., has an expiration time. During this period of time, the client can simply provide this token as the credential. In this way, the authentication mechanism becomes much simpler, and even safer since the token is only valid for some time.
 

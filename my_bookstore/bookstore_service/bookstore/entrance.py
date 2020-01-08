@@ -15,7 +15,7 @@ from .utils import RATELIMIT_DEFAULT
 entrance_bp = Blueprint(name='entrance', import_name=__name__)
 
 
-@entrance_bp.route('/')
+@entrance_bp.route('/', '/entrance')
 @limiter.limit(RATELIMIT_DEFAULT, key_func=get_remote_address)
 def home():
     """

@@ -57,15 +57,7 @@ def create_app(config_class=Config) -> Flask:
     app.register_blueprint(entrance_bp)
 
     # Authentication-related stuff
-    # from .utils import verify_password_or_token
-    # from .naive_api.auth import auth_bp
-    # app.register_blueprint(auth_bp)
-
-    # Naive implementation:
-    # from .naive_api.author import author_bp
-    # app.register_blueprint(author_bp)
-    # from .naive_api.book import book_bp
-    # app.register_blueprint(book_bp)
+    from .utils import verify_password_or_token
 
     # Implementation with extension:
     from .api import api_bp

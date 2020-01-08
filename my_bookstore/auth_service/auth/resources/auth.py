@@ -103,7 +103,7 @@ class UserAuth(Resource):
                 'message': 'Authentication failed'
             }, 401
         return {
-            'status': 'success'
+            'status': 'success',
             'data': username
         }
 
