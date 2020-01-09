@@ -34,7 +34,9 @@ e.g., A traditional e-commerce web application may be splitted into the followin
 
 RPC风格曾是Web Service的主流, 最初是基于XML-RPC协议, 后来渐渐被SOAP协议取代. RPC风格的web service, 不仅可以用HTTP, 还可以用TCP或其他通信协议.
 
-<u>但RPC风格的web service, 受开发web service所采用的语言的束缚比较大. e.g, 使用`.NET`框架开发的web service, 其客户端通常也需要用`C#`来实现; 而进入移动互联网时代后, RPC风格的web service很难在移动终端使用.</u>
+* <u>但RPC风格的web service, 受开发web service所采用的语言的束缚比较大. e.g, 使用`.NET`框架开发的web service, 其客户端通常也需要用`C#`来实现</u>
+* <u>而进入移动互联网时代后, RPC风格的web service很难在移动终端使用</u>
+* <u>SOAP协议要求, 数据传输必须用`XML`格式</u>
 
 详见: https://blog.igevin.info/posts/restful-architecture-in-general/
 
@@ -146,15 +148,30 @@ API传递的只是resource的"表示", 而不是resource本身, 而<u>`JSON`为�
 
 *=> 需要在request的header中指明: `Content-Type: application/json`*
 
+***
+
 <br>
 
-事实上, 正是由于serialization/deserialization的便捷, 使得RESTful API可以轻松地使用`JSON`作为数据传输的载体 ("表示")
+## RPC-based Web Service VS RESTful Web Service
 
-=> 使得server-side和client-side的开发独立开来, 造成了RESTful架构跨平台的特点
-
-=> 使得RESTful取代RPC成为Web Service的主流
+在了解了RPC风格的Web Service和RESTful Web Service后, 我们可以进行如下对比:
 
 ***
+
+As <u>background knowledge and reference</u>, check out the following OSI model and networking model:
+
+<img src="https://github.com/Ziang-Lu/Miscellaneous/raw/master/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/OSI%20Model.png?raw=true">
+
+<img src="https://github.com/Ziang-Lu/Miscellaneous/raw/master/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/Networking%20Model.png?raw=true">
+
+***
+
+|                             | RPC风格 Web Service                                          | RESTful Web Service    |
+| --------------------------- | ------------------------------------------------------------ | ---------------------- |
+| 协议                        | 最初是基于XML-RPC协议, 后来渐渐被SOAP取代                    |                        |
+| 支持的Application Layer协议 | 不仅可以用`HTTP`, 还可以用其他通信协议                       | `HTTP` / `HTTPS`       |
+| 数据传输格式                | `XML`                                                        | 任何格式, 主要是`JSON` |
+| 其他                        | 受开发web service所采用的语言的束缚比较大. e.g, 使用`.NET`框架开发的web service, 其客户端通常也需要用`C#`来实现<br>而进入移动互联网时代后, RPC风格的web service很难在移动终端使用 |                        |
 
 <br>
 

@@ -62,11 +62,9 @@
 
 
 
-### Note on web service security
+### Authentication & Authorization
 
-A web service <u>open to anyone</u> is <u>very unsafe</u>.
-
-=> Thus, we <u>need a authentication mechanism</u>, so that the web service is only open to those registered users.
+We <u>need a authentication mechanism</u>, so that the web service is only open to those registered users.
 
 However, the <u>"stateless principle" of RESTful architecture requires that the clients needs to provide credentials in every request they send</u>.
 
@@ -75,7 +73,7 @@ According to the author of `Flask-HTTPAuth` in his article https://blog.miguelgr
 * Maintain a `users` table of registered users
 
   * For this, we define `User` data model and `UserSchema` for serialization/deserialization.
-    * POST `/bookstore/users` with `username:password` authentication credentials creates a new user
+    * POST `/bookstore/users` with `username:password` authentication credentials to create a new user
 
 * The client needs to provide credentials in every request they send. There are two ways to do the authentication:
 
