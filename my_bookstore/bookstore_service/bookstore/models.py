@@ -41,8 +41,7 @@ class Book(db.Model):
         db.Integer, db.ForeignKey('authors.id', ondelete='CASCADE'),
         nullable=False
     )
-    # Define the lazy status for the backref
-    author = db.relationship(Author, backref=db.backref('books', lazy=True))
+    author = db.relationship(Author, backref=db.backref('books', lazy=True))  # Define the lazy status for the backref
     description = db.Column(db.Text)
     date_published = db.Column(db.Date, nullable=False, default=datetime.today)
 
@@ -52,16 +51,14 @@ class Book(db.Model):
 
 class AuthorSchema(ma.Schema):
     """
-    Author schema full complete definition.
-    For serialization, a Author object will be serialized to a JSON dictionary
+    Author schema.
+    For serialization, an Author object will be serialized to a JSON dictionary
     defined by this AuthorSchema.
     For deserialization, a JSON dictionary is validated, and then will be
     deserialized to a dictionary defined by this AuthorSchema.
     """
 
-    # Mark this field to be "dump-only", so it can't be deserialized from a
-    # request
-    id = fields.Integer(dump_only=True)
+    id = fields.Integer(dump_only=True)  # Mark this field to be "dump-only", so it can't be deserialized from a request
     name = fields.Str(
         required=True, validate=validate.Length(min=1, max=Author.NAME_MAX_LEN)
     )  # When doing deserialization, this field is required to exist in the JSON dictionary.
@@ -81,20 +78,16 @@ class AuthorSchema(ma.Schema):
         unknown = EXCLUDE  # When encountering a unknown fields, simply exclude it
 
     @post_load
-    def find_author(self, data: dict, **kwargs) -> Author:
+    def post_load_process_name(self, data: dict, **kwargs) -> dict:
         """
-        After deserialization, find the corresponding author, and if necessary,
-        construct the JSON data into an Author object.
+        After deserialization, do some post-processing on "name".
         :param data: dict
         :param kwargs:
-        :return: Author
+        :return: dict
         """
         # Process "name" field to be in title case
         data['name'] = data['name'].strip().title()
-        author = Author.query.filter_by(name=data['name']).first()
-        if author:
-            return author
-        return Author(**data)
+        return data
 
 
 author_schema = AuthorSchema()
@@ -103,7 +96,7 @@ authors_schema = AuthorSchema(many=True, only=('name', 'url_self'))
 
 class BookSchema(ma.Schema):
     """
-    Book schema complete definition.
+    Book schema.
     """
 
     id = fields.Integer(dump_only=True)
@@ -124,17 +117,16 @@ class BookSchema(ma.Schema):
         unknown = EXCLUDE
 
     @post_load
-    def make_book(self, data: dict, **kwargs) -> Book:
+    def post_load_process_title(self, data: dict, **kwargs) -> dict:
         """
-        After deserialization, do some post-processing and construct the JSON
-        data into a Book object.
+        After deserialization, do some post-processing on "title".
         :param data: dict
         :param kwargs:
-        :return: Book
+        :return: dict
         """
         # Process "title" field to be in title case
         data['title'] = data['title'].strip().title()
-        return Book(**data)
+        return data
 
 
 book_schema = BookSchema()

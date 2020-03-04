@@ -98,7 +98,7 @@ class Token(Resource):
         :return:
         """
         user = User.query.filter_by(username=request.json['username']).first()
-        token, duration = user.gen_token(user.id)
+        token, duration = user.gen_token()
         return {
             'token': token.decode('ascii'),
             'duration in seconds': duration

@@ -41,14 +41,15 @@ class User(db.Model):
         :param token: str
         :return: User or None
         """
-        serializer = Serializer(secret_key=current_app['SECRET_KEY'])
+        serializer = Serializer(secret_key=current_app.config['SECRET_KEY'])
         try:
             data = serializer.loads(token)
         except SignatureExpired:  # Valid token, but expired
             return None
         except BadSignature:  # Invalid token
             return None
-        return User.query.get(data['id'])
+        found_user = User.query.get(data['id'])
+        return found_user
 
     def gen_token(self, expires_in: int=600) -> Tuple[str, int]:
         """
@@ -57,7 +58,7 @@ class User(db.Model):
         :return: tuple(str, int)
         """
         serializer = Serializer(
-            secret_key=current_app['SECRET_KEY'], expires_in=expires_in
+            secret_key=current_app.config['SECRET_KEY'], expires_in=expires_in
         )
         return serializer.dumps({'id': self.id}), expires_in
 

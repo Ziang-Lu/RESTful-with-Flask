@@ -14,10 +14,10 @@
 
     Route: `bookstore/authors`
 
-    | Method | Description             | Request Form Schema                          | Response Status Code                         |
-    | ------ | ----------------------- | -------------------------------------------- | -------------------------------------------- |
-    | GET    | Returns all the authors |                                              | 200 on success                               |
-    | POST   | Creates a new author    | `name`: string<br>`email`: string [optional] | 201 on success, 400 on invalid data provided |
+    | Method | Description             | Request Form Schema                          | Response Status Code                                         |
+    | ------ | ----------------------- | -------------------------------------------- | ------------------------------------------------------------ |
+    | GET    | Returns all the authors |                                              | 200 on success                                               |
+    | POST   | Creates a new author    | `name`: string<br>`email`: string [optional] | 201 on successful creation, 200 on found existing author, 400 on invalid data provided |
 
   * `AuthorItem`
 
@@ -125,7 +125,11 @@ For this entire web service, this is the illustrative architecture:
 
 ### Deployment
 
-The deployment of this web services follows the Docker-way, i.e., with **Linux Server** + **Web Server (in `Docker` container) [`nginx`]** + **Python Web App WSGI Server [`Gunicorn`]**
+The deployment of this web services follows the Docker-way, i.e., with
+
+* **Linux Server**
+* **Web Server (in `Docker` container) [`nginx`]**
+* **Python Web App WSGI Server [`Gunicorn`]**
 
 Check out https://github.com/Ziang-Lu/Flask-Blog/blob/master/Deployment%20Options.md#2-linux-server--web-server-in-docker-container--python-web-app-wsgi-server-in-docker-container
 

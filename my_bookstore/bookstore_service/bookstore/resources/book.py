@@ -38,11 +38,13 @@ class BookList(Resource):
         :return:
         """
         try:
-            new_book = book_schema.load(request.get_json())
+            new_book_data = book_schema.load(request.get_json())
         except ValidationError as e:
             return {
                 'message': e.messages
             }, 400
+
+        new_book = Book(**new_book_data)
         db.session.add(new_book)
         db.session.commit()
         return {
@@ -78,18 +80,18 @@ class BookItem(Resource):
         book = Book.query.get_or_404(id, description='Book not found')
 
         try:
-            updated_book = book_schema.load(request.get_json())
+            book_data_updates = book_schema.load(request.get_json())
         except ValidationError as e:
             return {
                 'message': e.messages
             }
 
-        if updated_book.title:
-            book.title = updated_book.title
-        if updated_book.author:
-            book.author = updated_book.author
-        if updated_book.description:
-            book.description = updated_book.description
+        if 'title' in book_data_updates:
+            book.title = book_data_updates['title']
+        if 'author' in book_data_updates:
+            book.author = book_data_updates['author']
+        if 'description' in book_data_updates:
+            book.description = book_data_updates['description']
         db.session.commit()
         return {
             'status': 'success',

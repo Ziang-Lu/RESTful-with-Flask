@@ -2,11 +2,6 @@
 
 """
 Author-related RESTful API module.
-
-In the naive implementation, we used two "GET" methods to access "Author"
-resource, i.e., in a collection view and in a single view.
-But here, we need to split the same "Author" resource into two resources, i.e.,
-"AuthorList" for the collection view and "AuthorItem" for the single view.
 """
 
 from flask import request
@@ -43,12 +38,20 @@ class AuthorList(Resource):
         :return:
         """
         try:
-            new_author = author_schema.load(request.get_json())
+            new_author_data = author_schema.load(request.get_json())
         except ValidationError as e:
             return {
                 'message': e.messages
             }, 400
 
+        found_author = Author.query(name=new_author_data['name']).first()
+        if found_author:  # Found existing author
+            return {
+                'status': 'Found existing author',
+                'data': author_schema.dump(found_author)
+            }, 200
+
+        new_author = Author(**new_author_data)
         db.session.add(new_author)
         db.session.commit()
         return {
@@ -61,7 +64,10 @@ class AuthorItem(Resource):
     """
     Resource for a single author.
     """
-    decorators = [auth.login_required]
+    decorators = [
+        auth.login_required,
+        limiter.limit(RATELIMIT_NORMAL, per_method=True)
+    ]
 
     def get(self, id: int):
         """
@@ -84,7 +90,7 @@ class AuthorItem(Resource):
         author = Author.query.get_or_404(id, description='Author not found')
 
         try:
-            updated_author = author_schema.load(
+            author_data_updates = author_schema.load(
                 request.get_json(), partial=True
             )
         except ValidationError as e:
@@ -92,10 +98,10 @@ class AuthorItem(Resource):
                 'message': e.messages
             }, 400
 
-        if updated_author.name:
-            author.name = updated_author.name
-        if updated_author.email:
-            author.email = updated_author.email
+        if 'name' in author_data_updates:
+            author.name = author_data_updates['name']
+        if 'email' in author_data_updates:
+            author.email = author_data_updates['email']
         db.session.commit()
         return {
             'status': 'success',
