@@ -66,9 +66,9 @@
 
 We <u>need a authentication mechanism</u>, so that the web service is only open to those registered users.
 
-However, the <u>"stateless principle" of RESTful architecture requires that the clients needs to provide credentials in every request they send</u>.
+However, the <u>"stateless principle" of RESTful architecture requires that the clients need to provide credentials in every request they send</u>.
 
-According to the author of `Flask-HTTPAuth` in his article https://blog.miguelgrinberg.com/post/restful-authentication-with-flask
+According to the author of `Flask-HTTPAuth` in his article https://blog.miguelgrinberg.com/post/restful-authentication-with-flask:
 
 * Maintain a `users` table of registered users
 
@@ -79,7 +79,7 @@ According to the author of `Flask-HTTPAuth` in his article https://blog.miguelgr
 
   1. Provide `username:password` combination in every request
 
-  2. Send `username:password` to the server, and get back a token
+  2. First send `username:password` combination to the server, and get back a token
 
      * GET `/bookstore/token` with `username:password` or `token:<any-password>` authentication credentials to get a token for that user
 
@@ -87,9 +87,9 @@ According to the author of `Flask-HTTPAuth` in his article https://blog.miguelgr
 
      *Tricky side effect:*
 
-     *In this mechanism described above, we can simply provide a valid token to get a new token, and so on, ... Any problem with this?*
+     *In this mechanism, we can simply provide a valid token to get a new token, and so on, ... Any problem with this?*
 
-Thus, <u>we separate a Flask-based `auth_service` out from `bookstore_service` as a separate web service, which is responsible for user authentication, including user registration, token generation, and user authentication, etc</u>.
+Thus, <u>we separate a Flask-based `auth_service` out from `bookstore_service` as a separate web service, which is responsible for user authentication, including user registration, user authentication, and token generation</u>.
 
 ***
 
@@ -115,11 +115,11 @@ For this entire web service, this is the illustrative architecture:
 
 * Rate limiting
 
-  All routes are protected by rate limiting, implemented with `Flask-Limiter` and `Redis`.
+  Almost all routes are protected by rate limiting, implemented with `Flask-Limiter` and `Redis`.
 
 * Pagination for collection result
 
-  All routes returning a collection of resources actually returns paginated results, with information about pagination metadata as well as the URLs for the previous page, next page, first page, last page, etc.
+  All routes returning a collection of resources actually return paginated results, with information about pagination metadata as well as the URLs for the previous page, next page, first page, last page, etc.
 
 <br>
 

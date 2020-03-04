@@ -13,14 +13,14 @@ from .. import auth, limiter
 from ..utils import RATELIMIT_NORMAL, RATELIMIT_SLOW
 
 
-class UserItem(Resource):
+class UserList(Resource):
     """
-    Resource for a single user.
+    Resource for a collection of users.
     """
     decorators = [
         limiter.limit(
             RATELIMIT_NORMAL, key_func=get_remote_address, per_method=True
-        )
+        )  # This rate-limiting key-function falls back to the default.
     ]
 
     def post(self):

@@ -27,4 +27,4 @@ class Config:
     redis_hostname = 'rate-limiting'
     redis_port = 6379
     RATELIMIT_STORAGE_URL = f'redis://{redis_hostname}:{redis_port}'
-    RATELIMIT_STRATEGY = 'fixed-window'  # To do more accurate rate limiting more, change this to "moving-window"
+    RATELIMIT_STRATEGY = 'fixed-window'  # To do more accurate rate limiting, change this to "moving-window"

@@ -23,6 +23,7 @@ def my_key_func() -> str:
     """
     if 'username' in g:
         return g.username
+    # Falls back to the default
     return get_remote_address()
 
 
@@ -40,10 +41,10 @@ def create_app(config_class=Config) -> Flask:
 
     db.init_app(app)
     ma.init_app(app)  # Order matters: Initialize SQLAlchemy before Marshmallow
-    # Since we'll place this web service behind a proxy server (Nginx), in order
-    # for rate-limiting to get the correct remote address from
+    # Since we'll place this web service behind a reverse proxy server (Nginx),
+    # in order for rate-limiting to get the correct remote address from
     # "X-Forwarded-For" header, we need to do some extra setup here.
-    app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1)
+    app.wsgi_app = ProxyFix(app.wsgi_app)  # Default: x_for=1, x_proto=1
     limiter.init_app(app)
 
     # In order to make sure that all the routes are prefixed with
@@ -63,6 +64,7 @@ def create_app(config_class=Config) -> Flask:
     from .api import api_bp
     app.register_blueprint(api_bp)
 
+    # Create and initialize the database
     db.create_all(app=app)
 
     return app

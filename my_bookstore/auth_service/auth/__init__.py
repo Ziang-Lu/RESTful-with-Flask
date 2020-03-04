@@ -27,6 +27,7 @@ def create_app(config=Config) -> Flask:
     from .api import api_bp
     app.register_blueprint(api_bp)
 
+    # Create and initialize the database
     db.create_all(app=app)
 
     return app

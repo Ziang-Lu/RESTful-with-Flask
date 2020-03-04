@@ -4,9 +4,7 @@
 Authentication-related RESTful API module.
 """
 
-from typing import Optional, Tuple
-
-from flask import current_app, request
+from flask import request
 from flask_restful import Resource
 from marshmallow import ValidationError
 
@@ -31,6 +29,7 @@ class UserList(Resource):
                 'message': e.messages
             }, 400
         username = user_data['username']
+        email = user_data['email']
         password = user_data['password']
 
         if User.query.filter_by(username=username).first():
@@ -41,6 +40,7 @@ class UserList(Resource):
 
         new_user = User(
             username=username,
+            email=email,
             password=bcrypt.generate_password_hash(password).decode('utf-8')
         )
         db.session.add(new_user)
@@ -66,24 +66,24 @@ class UserAuth(Resource):
         password = auth_data['password']
 
         # Verify as if username_or_token is a token
-        username = None
-        user = User.verify_token(username_or_token)
-        if user:
-            username = user.username
+        found_username = None
+        found_user = User.verify_token(username_or_token)
+        if found_user:
+            found_username = found_user.username
         else:
             # Verify the username and password combination
             user = User.query.filter_by(username=username_or_token).first()
             if user and bcrypt.check_password_hash(user.password, password):
-                username = user.username
+                found_username = user.username
 
-        if username is None:
+        if found_username is None:  # User not found
             return {
                 'status': 'error',
-                'message': 'Authentication failed'
+                'message': 'User not found. Authentication failed.'
             }, 401
         return {
             'status': 'success',
-            'data': username
+            'data': found_username
         }
 
 

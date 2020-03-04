@@ -14,6 +14,8 @@ from flask_marshmallow import Schema
 from . import auth
 
 
+# If we want to use "auth.login_required" decorator on routes, we need to
+# provide an implementation to "auth.verify_password"
 @auth.verify_password
 def verify_password_or_token(username_or_token: str, password: str) -> bool:
     """
@@ -33,6 +35,7 @@ def verify_password_or_token(username_or_token: str, password: str) -> bool:
     )
     if r.status_code == 401:
         return False
+    # Save the found username for the current request processing
     g.username = r.json()['data']
     return True
 

@@ -23,6 +23,7 @@ class User(db.Model):
     __tablename__ = 'users'
 
     USERNAME_MAX_LEN = 120
+    EMAIL_MAX_LEN = 50
     PASSWORD_MIN_LEN = 8
     PASSWORD_MAX_LEN = 60
 
@@ -30,6 +31,7 @@ class User(db.Model):
     username = db.Column(
         db.String(USERNAME_MAX_LEN), nullable=False, unique=True, index=True
     )  # Since we'll frequently query usernames, we create an index on it.
+    email = db.Column(db.String(EMAIL_MAX_LEN), unique=True)
     password = db.Column(db.String(PASSWORD_MAX_LEN), nullable=False)
 
     @staticmethod
@@ -51,13 +53,13 @@ class User(db.Model):
     def gen_token(self, expires_in: int=600) -> Tuple[str, int]:
         """
         Generates a user token with the given expiration time.
-        :param expiration: int
+        :param expires_in: int
         :return: tuple(str, int)
         """
         serializer = Serializer(
-            secret_key=current_app['SECRET_KEY'], expires_in=expiration
+            secret_key=current_app['SECRET_KEY'], expires_in=expires_in
         )
-        return serializer.dumps({'id': self.id}), expiration
+        return serializer.dumps({'id': self.id}), expires_in
 
 
 class UserSchema(ma.Schema):
@@ -69,6 +71,9 @@ class UserSchema(ma.Schema):
     username = fields.Str(
         required=True,
         validate=validate.Length(min=1, max=User.USERNAME_MAX_LEN)
+    )
+    email = fields.Email(
+        validate=validate.Length(min=1, max=User.EMAIL_MAX_LEN)
     )
     password = fields.Str(
         required=True,
