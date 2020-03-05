@@ -9,19 +9,16 @@ from flask_restful import Resource
 from flask_sqlalchemy import BaseQuery
 from marshmallow import ValidationError
 
-from .. import auth, db, limiter
+from .. import auth, db
 from ..models import Book, book_schema, books_schema
-from ..utils import RATELIMIT_NORMAL, paginate
+from ..utils import paginate
 
 
 class BookList(Resource):
     """
     Resource for a collection of books.
     """
-    decorators = [
-        auth.login_required,
-        limiter.limit(RATELIMIT_NORMAL, per_method=True)
-    ]
+    decorators = [auth.login_required]
 
     @paginate(books_schema)
     def get(self) -> BaseQuery:

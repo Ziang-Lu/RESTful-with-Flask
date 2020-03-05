@@ -113,10 +113,6 @@ For this entire web service, this is the illustrative architecture:
 
 ### Additional Features
 
-* Rate limiting
-
-  Almost all routes are protected by rate limiting, implemented with `Flask-Limiter` and `Redis`.
-
 * Pagination for collection result
 
   All routes returning a collection of resources actually return paginated results, with information about pagination metadata as well as the URLs for the previous page, next page, first page, last page, etc.

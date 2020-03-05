@@ -1,21 +1,19 @@
-version: "3.7"
+version: '3.7'
 
 services:
-
   nginx:
     depends_on:
       - flask
     build: ./nginx_web_server
     ports:
       # Bind container port 80 to the host port 80
-      - "80:80"
+      - '80:80'
     restart: always
 
   flask:
     depends_on:
       - auth_service
       - db
-      - rate-limiting
     build: ./bookstore_service
     expose:
       # Since we'll use Gunicorn to run the application, we need to expose its
@@ -34,7 +32,7 @@ services:
       - 8000
     restart: always
 
-  db:  # Note that this is also the hostname of the "db" service container
+  db: # Note that this is also the hostname of the "db" service container
     image: postgres:9.6
     environment:
       - POSTGRES_USER=postgres
@@ -45,14 +43,6 @@ services:
       - db_volume:/var/lib/postgresql/data
     expose:
       - 5432
-      # Note that this port is only exposed to other services in the same
-      # network, but not to outside world
-    restart: always
-
-  rate-limiting:  # Note that this is also the hostname of the "rate-limiting" service container
-    image: redis
-    expose:
-      - 6379
       # Note that this port is only exposed to other services in the same
       # network, but not to outside world
     restart: always

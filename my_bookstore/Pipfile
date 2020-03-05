@@ -9,7 +9,6 @@ verify_ssl = true
 flask = "*"
 flask-bcrypt = "*"
 flask-httpauth = "*"
-flask-limiter = "*"
 flask-marshmallow = "*"
 flask-restful = "*"
 flask-sqlalchemy = "*"

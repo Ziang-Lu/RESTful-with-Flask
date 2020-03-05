@@ -18,7 +18,7 @@ We have a full, "monolithic", heavy web application, which contains all the func
 
 <br>
 
-## Service-Oriented-Architecture (SOA) (面向服务架构) for Web Applications
+## Service-Oriented-Architecture (SOA) (面向服务架构)
 
 Now, we can <u>split these functionalities to "services".</u> <u>Each "service" corresponds to a "resource" and implements a single functionality, and should be associated with a URI</u>.
 

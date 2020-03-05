@@ -7,17 +7,12 @@ API entrance module.
 from typing import List
 
 from flask import Blueprint, url_for
-from flask_limiter.util import get_remote_address
-
-from . import limiter
-from .utils import RATELIMIT_DEFAULT
 
 entrance_bp = Blueprint(name='entrance', import_name=__name__)
 
 
 @entrance_bp.route('/')
 @entrance_bp.route('/entrance')
-@limiter.limit(RATELIMIT_DEFAULT, key_func=get_remote_address)  # This rate-liminting key-function falls back to the default.
 def home():
     """
     API entrance.

@@ -54,8 +54,7 @@ def paginate(collection_schema: Schema, max_per_page: int=10) -> Callable:
         def wrapper(*args, **kwargs):
             page = request.args.get('page', type=int, default=1)
             per_page = min(
-                request.args.get('per_page', type=int,
-                                 default=10), max_per_page
+                request.args.get('per_page', type=int, default=10), max_per_page
             )
 
             query = f(*args, **kwargs)
@@ -99,8 +98,3 @@ def paginate(collection_schema: Schema, max_per_page: int=10) -> Callable:
         return wrapper
 
     return decorator
-
-
-RATELIMIT_DEFAULT = '1 per second'
-RATELIMIT_NORMAL = '20 per minute'
-RATELIMIT_SLOW = '1 per minute'

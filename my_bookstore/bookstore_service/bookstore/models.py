@@ -40,8 +40,8 @@ class Book(db.Model):
     author_id = db.Column(
         db.Integer, db.ForeignKey('authors.id', ondelete='CASCADE'),
         nullable=False
-    )
-    author = db.relationship(Author, backref=db.backref('books', lazy=True))  # Define the lazy status for the backref
+    )  # When the author is deleted, all of his/her books are deleted as well.
+    author = db.relationship(Author, backref=db.backref('books', lazy=True))
     description = db.Column(db.Text)
     date_published = db.Column(db.Date, nullable=False, default=datetime.today)
 
@@ -52,40 +52,34 @@ class Book(db.Model):
 class AuthorSchema(ma.Schema):
     """
     Author schema.
-    For serialization, an Author object will be serialized to a JSON dictionary
-    defined by this AuthorSchema.
-    For deserialization, a JSON dictionary is validated, and then will be
-    deserialized to a dictionary defined by this AuthorSchema.
     """
 
-    id = fields.Integer(dump_only=True)  # Mark this field to be "dump-only", so it can't be deserialized from a request
+    id = fields.Integer(dump_only=True)
     name = fields.Str(
         required=True, validate=validate.Length(min=1, max=Author.NAME_MAX_LEN)
-    )  # When doing deserialization, this field is required to exist in the JSON dictionary.
+    )
     email = fields.Email(
         validate=validate.Length(max=Author.EMAIL_MAX_LEN), load_only=True
-    )  # Mark this field to be "load-only", so it can't be serialized
+    )
 
     books = fields.Nested(
         'BookSchema', many=True, only=('title', 'url_self'), dump_only=True
     )
 
-    # Note: For naive implementation, fix the blueprint prefix of the endpoints
     url_self = ma.URLFor('api.author', id='<id>', _external=True)
     url_collection = ma.URLFor('api.authors', _external=True)
 
     class Meta:
-        unknown = EXCLUDE  # When encountering a unknown fields, simply exclude it
+        unknown = EXCLUDE
 
     @post_load
     def post_load_process_name(self, data: dict, **kwargs) -> dict:
         """
-        After deserialization, do some post-processing on "name".
+        After deserialization, process the "name" field to be in title case.
         :param data: dict
         :param kwargs:
         :return: dict
         """
-        # Process "name" field to be in title case
         data['name'] = data['name'].strip().title()
         return data
 
@@ -109,7 +103,6 @@ class BookSchema(ma.Schema):
     description = fields.Str()
     date_published = fields.Date()
 
-    # Note: For naive implementation, fix the blueprint prefix of the endpoints
     url_self = ma.URLFor('api.book', id='<id>', _external=True)
     url_collection = ma.URLFor('api.books', _external=True)
 
@@ -119,12 +112,11 @@ class BookSchema(ma.Schema):
     @post_load
     def post_load_process_title(self, data: dict, **kwargs) -> dict:
         """
-        After deserialization, do some post-processing on "title".
+        After deserialization, process the "title" field to be in title case.
         :param data: dict
         :param kwargs:
         :return: dict
         """
-        # Process "title" field to be in title case
         data['title'] = data['title'].strip().title()
         return data
 
