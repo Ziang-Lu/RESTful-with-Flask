@@ -10,17 +10,33 @@
 
 * **Defined Resources**:
 
+  * `UserList`
+
+    Route: `bookstore/users`
+
+    | Method | Description     | Request Form Schema                                         | Response Status Code                         |
+    | ------ | --------------- | ----------------------------------------------------------- | -------------------------------------------- |
+    | POST   | Adds a new user | `username`: string<br>`email`: string<br>`password`: string | 201 on success, 400 on invalid data provided |
+    
+* `AccessToken`
+  
+  Route: `bookstore/access-token`
+  
+    | Method | Description                                         | Request Form Schema | Response Status Code |
+    | ------ | --------------------------------------------------- | ------------------- | -------------------- |
+    | GET    | Gets an access token for the current logged-in user | `username`: string  | 200 on success       |
+  
   * `AuthorList`
-
+  
     Route: `bookstore/authors`
-
-    | Method | Description             | Request Form Schema                          | Response Status Code                                         |
+  
+  | Method | Description             | Request Form Schema                          | Response Status Code                                         |
     | ------ | ----------------------- | -------------------------------------------- | ------------------------------------------------------------ |
     | GET    | Returns all the authors |                                              | 200 on success                                               |
-    | POST   | Creates a new author    | `name`: string<br>`email`: string [optional] | 201 on successful creation, 200 on found existing author, 400 on invalid data provided |
-
+    | POST   | Creates a new author    | `name`: string<br>`email`: string [optional] | 201 on successful creation, 200 on existing author found, 400 on invalid data provided |
+  
   * `AuthorItem`
-
+  
     Route: `bookstore/authors/<int:id>`
   
     | Method | Description                              | Request Form Schema                                     | Reponse Status Code                                          |
@@ -30,7 +46,7 @@
   | DELETE | Deletes the author with the specified ID |                                                         | 204 on success, 404 on author not found                      |
   
   * `BookList` & `BookItem`
-
+  
     Similar to `Author`, but with request data schema as follows:
   
     | Field name    | Type   | Required? |
@@ -64,7 +80,7 @@
 
 ### Authentication & Authorization
 
-We <u>need a authentication mechanism</u>, so that the web service is only open to those registered users.
+We <u>need an authentication mechanism</u>, so that the web service is only open to those registered users.
 
 However, the <u>"stateless principle" of RESTful architecture requires that the clients need to provide credentials in every request they send</u>.
 
@@ -79,17 +95,17 @@ According to the author of `Flask-HTTPAuth` in his article https://blog.miguelgr
 
   1. Provide `username:password` combination in every request
 
-  2. First send `username:password` combination to the server, and get back a token
+  2. First send `username:password` combination to the server, and get back an access token
 
-     * GET `/bookstore/token` with `username:password` or `token:<any-password>` authentication credentials to get a token for that user
+     * GET `/bookstore/access-token` with `username:password` or `access_token:<any-password>` authentication credentials to get an access token for that user
 
-     This token is only valid for some time, i.e., has an expiration time. During this period of time, the client can simply provide this token as the credential. In this way, the authentication mechanism becomes much simpler, and even safer since the token is only valid for some time.
+     This access token is only valid for some time, i.e., has an expiration time. During this period of time, the client can simply provide this access token as the credential. In this way, the authentication mechanism becomes much simpler, and even safer since the access token is only valid for some time.
 
      *Tricky side effect:*
 
-     *In this mechanism, we can simply provide a valid token to get a new token, and so on, ... Any problem with this?*
+     *In this mechanism, we can simply provide a valid access token to get a new access token, and so on, ... Any problem with this?*
 
-Thus, <u>we separate a Flask-based `auth_service` out from `bookstore_service` as a separate web service, which is responsible for user authentication, including user registration, user authentication, and token generation</u>.
+Thus, <u>we separate a Flask-based `auth_service` out from `bookstore_service` as a separate web service, which is responsible for user authentication, including user registration, user authentication, and access token generation.</u>
 
 ***
 

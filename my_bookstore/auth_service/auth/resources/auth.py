@@ -65,9 +65,9 @@ class UserAuth(Resource):
         username_or_token = auth_data['username_or_token']
         password = auth_data['password']
 
-        # Verify as if username_or_token is a token
+        # Verify as if username_or_token is an access token
         found_username = None
-        found_user = User.verify_token(username_or_token)
+        found_user = User.verify_access_token(username_or_token)
         if found_user:
             found_username = found_user.username
         else:
@@ -87,19 +87,19 @@ class UserAuth(Resource):
         }
 
 
-class Token(Resource):
+class AccessToken(Resource):
     """
-    Resource for token.
+    Resource for access token.
     """
 
     def get(self):
         """
-        Gets a token for the current logged-in user.
+        Gets an access token for the current logged-in user.
         :return:
         """
         user = User.query.filter_by(username=request.json['username']).first()
-        token, duration = user.gen_token()
+        access_token, duration = user.gen_access_token()
         return {
-            'token': token.decode('ascii'),
+            'token': access_token.decode('ascii'),
             'duration in seconds': duration
         }

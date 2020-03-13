@@ -35,25 +35,25 @@ class User(db.Model):
     password = db.Column(db.String(PASSWORD_MAX_LEN), nullable=False)
 
     @staticmethod
-    def verify_token(token: str):
+    def verify_access_token(access_token: str):
         """
-        Static method to verify the given token.
-        :param token: str
+        Static method to verify the given access token.
+        :param access_token: str
         :return: User or None
         """
         serializer = Serializer(secret_key=current_app.config['SECRET_KEY'])
         try:
-            data = serializer.loads(token)
-        except SignatureExpired:  # Valid token, but expired
+            data = serializer.loads(access_token)
+        except SignatureExpired:  # Valid access token, but expired
             return None
-        except BadSignature:  # Invalid token
+        except BadSignature:  # Invalid access token
             return None
         found_user = User.query.get(data['id'])
         return found_user
 
-    def gen_token(self, expires_in: int=600) -> Tuple[str, int]:
+    def gen_access_token(self, expires_in: int=600) -> Tuple[str, int]:
         """
-        Generates a user token with the given expiration time.
+        Generates a user access token with the given expiration time.
         :param expires_in: int
         :return: tuple(str, int)
         """

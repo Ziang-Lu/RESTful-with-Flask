@@ -17,10 +17,11 @@ from . import auth
 # If we want to use "auth.login_required" decorator on routes, we need to
 # provide an implementation to "auth.verify_password"
 @auth.verify_password
-def verify_password_or_token(username_or_token: str, password: str) -> bool:
+def verify_password_or_access_token(username_or_token: str,
+                                    password: str) -> bool:
     """
-    Verifies the given username and password combination, or the given token as
-    the username parameter.
+    Verifies the given username and password combination, or the given access
+    token as the username parameter.
     This function is automatically called by auth.login_required
     :param username_or_token: str
     :param password: str

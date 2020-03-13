@@ -21,8 +21,8 @@ def home():
     return {
         'home': _make_entry('entrance.home', allowed_methods=['GET']),
         'add_user': _make_entry('api.add_user', allowed_methods=['POST']),
-        'get_token': _make_entry(
-            'api.token', allowed_methods=['GET'], require_login=True
+        'get_access_token': _make_entry(
+            'api.access_token', allowed_methods=['GET'], require_login=True
         ),
         'authors': _make_entry(
             'api.authors', allowed_methods=['GET', 'POST'], require_login=True

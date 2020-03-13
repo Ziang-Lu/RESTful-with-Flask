@@ -29,7 +29,7 @@ class UserList(Resource):
         return r.json(), r.status_code
 
 
-class Token(Resource):
+class AccessToken(Resource):
     """
     Resource for token.
     """
@@ -37,7 +37,7 @@ class Token(Resource):
 
     def get(self):
         """
-        Gets a token for the current logged-in user.
+        Gets an access token for the current logged-in user.
         :return:
         """
         # Even though "redirect()" is able to redirect "GET" requests, it cannot
@@ -46,6 +46,7 @@ class Token(Resource):
 
         # After logging-in, we can access the username with "g.username"
         r = requests.get(
-            'http://auth_service:8000/token', json={'username': g.username}
+            'http://auth_service:8000/access-token',
+            json={'username': g.username}
         )
         return r.json(), r.status_code
