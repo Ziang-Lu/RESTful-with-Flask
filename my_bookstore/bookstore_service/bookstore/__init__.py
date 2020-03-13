@@ -35,7 +35,7 @@ def create_app(config_class=Config) -> Flask:
     app.register_blueprint(entrance_bp)
 
     # Authentication-related stuff
-    from .utils import verify_password_or_token
+    from .utils import verify_password_or_access_token
 
     from .api import api_bp
     app.register_blueprint(api_bp)

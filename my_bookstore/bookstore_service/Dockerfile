@@ -4,6 +4,12 @@ FROM ziangl/my_bookstore_base
 COPY . /bookstore_service
 # Specify the working directory as "/bookstore_service/"
 WORKDIR /bookstore_service
+
+# Set environment variables
+ENV FLASK_SECRET_KEY 8bfbeeb3da58dddc3c2b8d15cf2a1904
+ENV POSTGRES_USER postgres
+ENV POSTGRES_PASSWORD password
+
 # When running the application in its own container, we use Gunicorn, rather
 # than the default Flask development server.
 # Since we want everyone outside the Docker container to be able to access the

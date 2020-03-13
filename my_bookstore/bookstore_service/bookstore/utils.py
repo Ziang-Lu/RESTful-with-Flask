@@ -13,6 +13,8 @@ from flask_marshmallow import Schema
 
 from . import auth
 
+USER_SERVICE = 'http://auth_service:8000'
+
 
 # If we want to use "auth.login_required" decorator on routes, we need to
 # provide an implementation to "auth.verify_password"
@@ -28,7 +30,7 @@ def verify_password_or_access_token(username_or_token: str,
     :return: bool
     """
     r = requests.get(
-        'http://auth_service:8000/user-auth',
+        f'{USER_SERVICE}/user-auth',
         json={
             'username_or_token': username_or_token,
             'password': password

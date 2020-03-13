@@ -47,7 +47,10 @@ class UserList(Resource):
         db.session.commit()
         return {
             'status': 'success',
-            'data': user_schema.dump(new_user)
+            'data': {
+                'new_user': user_schema.dumps(new_user),
+                'access_token': new_user.gen_access_token()
+            }
         }, 201
 
 
@@ -100,6 +103,6 @@ class AccessToken(Resource):
         user = User.query.filter_by(username=request.json['username']).first()
         access_token, duration = user.gen_access_token()
         return {
-            'token': access_token.decode('ascii'),
+            'access token': access_token.decode('ascii'),
             'duration in seconds': duration
         }

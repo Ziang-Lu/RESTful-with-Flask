@@ -9,6 +9,7 @@ from flask import g, request
 from flask_restful import Resource
 
 from .. import auth
+from ..utils import USER_SERVICE
 
 
 class UserList(Resource):
@@ -23,9 +24,7 @@ class UserList(Resource):
         """
         # "redirect()" cannot redirect "POST" requests, so we need to manually
         # do the redirecting.
-        r = requests.post(
-            'http://auth_service:8000/users', json=request.get_json()
-        )
+        r = requests.post(f'{USER_SERVICE}/users', json=request.get_json())
         return r.json(), r.status_code
 
 
@@ -46,7 +45,7 @@ class AccessToken(Resource):
 
         # After logging-in, we can access the username with "g.username"
         r = requests.get(
-            'http://auth_service:8000/access-token',
+            f'{USER_SERVICE}/access-token',
             json={'username': g.username}
         )
         return r.json(), r.status_code

@@ -19,17 +19,15 @@ def home():
     :return:
     """
     return {
-        'home': _make_entry('entrance.home', allowed_methods=['GET']),
-        'add_user': _make_entry('api.add_user', allowed_methods=['POST']),
+        'home': _make_entry('entrance.home', ['GET']),
+        'add_user': _make_entry('api.add_user', ['POST']),
         'get_access_token': _make_entry(
-            'api.access_token', allowed_methods=['GET'], require_login=True
+            'api.access_token', ['GET'], require_login=True
         ),
         'authors': _make_entry(
-            'api.authors', allowed_methods=['GET', 'POST'], require_login=True
+            'api.authors', ['GET', 'POST'], require_login=True
         ),
-        'books': _make_entry(
-            'api.books', allowed_methods=['GET', 'POST'], require_login=True
-        )
+        'books': _make_entry('api.books', ['GET', 'POST'], require_login=True)
     }
 
 
