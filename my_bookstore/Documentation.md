@@ -17,23 +17,23 @@
     | Method | Description     | Request Form Schema                                         | Response Status Code                         |
     | ------ | --------------- | ----------------------------------------------------------- | -------------------------------------------- |
     | POST   | Adds a new user | `username`: string<br>`email`: string<br>`password`: string | 201 on success, 400 on invalid data provided |
-    
+  
 * `AccessToken`
   
   Route: `bookstore/access-token`
   
-    | Method | Description                                         | Request Form Schema | Response Status Code |
-    | ------ | --------------------------------------------------- | ------------------- | -------------------- |
-    | GET    | Gets an access token for the current logged-in user | `username`: string  | 200 on success       |
+  | Method | Description                                         | Request Form Schema | Response Status Code |
+  | ------ | --------------------------------------------------- | ------------------- | -------------------- |
+  | GET    | Gets an access token for the current logged-in user | `username`: string  | 200 on success       |
   
   * `AuthorList`
   
     Route: `bookstore/authors`
   
   | Method | Description             | Request Form Schema                          | Response Status Code                                         |
-    | ------ | ----------------------- | -------------------------------------------- | ------------------------------------------------------------ |
-    | GET    | Returns all the authors |                                              | 200 on success                                               |
-    | POST   | Creates a new author    | `name`: string<br>`email`: string [optional] | 201 on successful creation, 200 on existing author found, 400 on invalid data provided |
+  | ------ | ----------------------- | -------------------------------------------- | ------------------------------------------------------------ |
+  | GET    | Returns all the authors |                                              | 200 on success                                               |
+  | POST   | Creates a new author    | `name`: string<br>`email`: string [optional] | 201 on successful creation, 200 on existing author found, 400 on invalid data provided |
   
   * `AuthorItem`
   
@@ -135,21 +135,68 @@ For this entire web service, this is the illustrative architecture:
 
 <br>
 
-### Deployment
+## Local Development
 
-The deployment of this web services follows the Docker-way, i.e., with
+### Environment Setup
 
-* **Linux Server**
-* **Web Server (in `Docker` container) [`nginx`]**
-* **Python Web App WSGI Server [`Gunicorn`]**
+```shell
+$ pipenv --python=3.7
+$ pipenv shell
 
-Check out https://github.com/Ziang-Lu/Flask-Blog/blob/master/Deployment%20Options.md#2-linux-server--web-server-in-docker-container--python-web-app-wsgi-server-in-docker-container
+# Install all the package specified in Pipfile
+$ pipenv install
+```
 
-***
+<br>
 
-Thus, this web service can be deployed as follows:
+Normal development...
+
+<br>
+
+### Run the Dockerized Web Service
+
+The running of this web service may follow the **Docker-way**, i.e., with
+
+* **Web Server (in Docker container) [`nginx`]**
+* **Python Web App WSGI Server (in Docker container) [`Gunicorn`]**
+
+Check out https://github.com/Ziang-Lu/Flask-Blog/blob/master/Deployment%20Options.md#dockerization-linux-server--web-server-in-docker-container--python-web-app-wsgi-server-in-docker-container for more information
+
+Thus, this web service can be Dockerized as follows:
 
 <img src="https://github.com/Ziang-Lu/RESTful-with-Flask/blob/master/my_bookstore/Bookstore%20Web%20Service%20Deployment.png?raw=true">
 
 ***
+
+If the dependencies ever changed 
+
+```shell
+# Update requirements.txt from Pipenv.lock
+$ pipenv lock -r > requirements.txt
+
+# Since bookstore_service and auth_service almost depend on the same Python dependencies, when putting them into separate Docker images:
+# - We created a base image, which contains all the needed Python dependencies
+# - Let separate images inherit from this base image, so that the Python dependencies are downloaded once in the base image, and can be reused among all the separate images.
+
+# Build, tag, and push the base image, on which other images are dependent of
+$ ./docker_base_exec.sh
+```
+
+***
+
+To run the Dockerized web service, every time some changes are made to the codes:
+
+```shell
+# Build and tag the service images
+$ ./docker_services_exec.sh
+
+# Use docker-compose to orchestrate the services (containers)
+$ docker-compose up
+```
+
+After running the application:
+
+```shell
+$ docker-compose down -v
+```
 
