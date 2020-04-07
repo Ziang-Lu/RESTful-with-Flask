@@ -45,7 +45,6 @@ class AccessToken(Resource):
 
         # After logging-in, we can access the username with "g.username"
         r = requests.get(
-            f'{USER_SERVICE}/access-token',
-            json={'username': g.username}
+            f'{USER_SERVICE}/access-token', json={'username': g.username}
         )
         return r.json(), r.status_code

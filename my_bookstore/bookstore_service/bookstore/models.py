@@ -38,10 +38,17 @@ class Book(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(TITLE_MAX_LEN), nullable=False)
     author_id = db.Column(
-        db.Integer, db.ForeignKey('authors.id', ondelete='CASCADE'),
+        db.Integer,
+        db.ForeignKey('authors.id', onupdate='CASCADE', ondelete='CASCADE'),
         nullable=False
-    )  # When the author is deleted, all of his/her books are deleted as well.
-    author = db.relationship(Author, backref=db.backref('books', lazy=True))
+    )
+    # When the author is updated or deleted, all of his/her books are deleted as
+    # well.
+    author = db.relationship(
+        'Author',
+        lazy=False,
+        backref=db.backref('books', lazy=False, cascade='all, delete-orphan')
+    )  # Book.author and Author.books are both eager-loading.
     description = db.Column(db.Text)
     date_published = db.Column(db.Date, nullable=False, default=datetime.today)
 
@@ -98,7 +105,7 @@ class BookSchema(ma.Schema):
         required=True, validate=validate.Length(min=1, max=Book.TITLE_MAX_LEN)
     )
     author = fields.Nested(
-        AuthorSchema, required=True, only=('name', 'url_self')
+        'AuthorSchema', required=True, only=('name', 'url_self')
     )
     description = fields.Str()
     date_published = fields.Date()
