@@ -23,8 +23,17 @@ class Author(db.Model):
     EMAIL_MAX_LEN = 120
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(NAME_MAX_LEN), nullable=False, unique=True)
+    name = db.Column(
+        db.String(NAME_MAX_LEN), nullable=False, unique=True, index=True
+    )  # Since we'll frequently query names, we create an index on it.
     email = db.Column(db.String(EMAIL_MAX_LEN))
+
+    books = db.relationship(
+        'Book',
+        lazy=False,
+        cascade='all, delete-orphan',
+        backref=db.backref('author', lazy=False)
+    )  # Author.books and Book.author are both eager-loading.
 
 
 class Book(db.Model):
@@ -41,14 +50,7 @@ class Book(db.Model):
         db.Integer,
         db.ForeignKey('authors.id', onupdate='CASCADE', ondelete='CASCADE'),
         nullable=False
-    )
-    # When the author is updated or deleted, all of his/her books are deleted as
-    # well.
-    author = db.relationship(
-        'Author',
-        lazy=False,
-        backref=db.backref('books', lazy=False, cascade='all, delete-orphan')
-    )  # Book.author and Author.books are both eager-loading.
+    )  # When the author is updated or deleted, all of his/her books are updated or deleted as well.
     description = db.Column(db.Text)
     date_published = db.Column(db.Date, nullable=False, default=datetime.today)
 
@@ -104,8 +106,13 @@ class BookSchema(ma.Schema):
     title = fields.Str(
         required=True, validate=validate.Length(min=1, max=Book.TITLE_MAX_LEN)
     )
+    author_name = fields.Str(
+        required=True,
+        validate=validate.Length(min=1, max=Author.NAME_MAX_LEN),
+        load_only=True
+    )
     author = fields.Nested(
-        'AuthorSchema', required=True, only=('name', 'url_self')
+        'AuthorSchema', only=('name', 'url_self'), dump_only=True
     )
     description = fields.Str()
     date_published = fields.Date()

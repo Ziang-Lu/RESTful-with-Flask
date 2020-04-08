@@ -10,7 +10,7 @@ from flask_sqlalchemy import BaseQuery
 from marshmallow import ValidationError
 
 from .. import auth, db
-from ..models import Book, book_schema, books_schema
+from ..models import Author, Book, book_schema, books_schema
 from ..utils import paginate
 
 
@@ -41,6 +41,17 @@ class BookList(Resource):
                 'message': e.messages
             }, 400
 
+        author_name = new_book_data['author_name']
+        author = Author.query.filter_by(name=author_name)
+        if not author:
+            # Create a new author
+            new_author = Author(name=author_name)
+            # In order to get the assigned ID of the new author, we need to
+            # commit the transaction.
+            db.session.add(new_author)
+            db.session.commit()
+
+        new_book_data['author_id'] = author.id
         new_book = Book(**new_book_data)
         db.session.add(new_book)
         db.session.commit()
@@ -85,8 +96,6 @@ class BookItem(Resource):
 
         if 'title' in book_data_updates:
             book.title = book_data_updates['title']
-        if 'author' in book_data_updates:
-            book.author = book_data_updates['author']
         if 'description' in book_data_updates:
             book.description = book_data_updates['description']
         db.session.commit()

@@ -61,7 +61,7 @@ def paginate(collection_schema: Schema, max_per_page: int=10) -> Callable:
             )
 
             query = f(*args, **kwargs)
-            p = query.paginate(page=page, per_page=per_page)
+            p = query.paginate(page, per_page)
             # "p" is a Pagination object.
 
             # Populate the pagination metadata
